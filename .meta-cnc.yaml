@@ -1,0 +1,80 @@
+# this is the name of this skillet, should be unique within a given repository
+name: vm-series_model_changer
+
+# label should be a human readable label that conveys what this skillet will do
+label: Skillet to upgrade or downgrade the VM-Series model in vShere Environment.
+
+# description is a longer more informative version of a label
+description: This skillet can be used to upgrade or downgrade the VM-Series model (Virtical scalling) in vShere Environment.
+
+# type instructs Panhandler how to consume this skillet
+type: python3
+
+# extends allows you to include other skillets along with this one
+extends:
+
+# labels allow extensible configuration options per skillet type. For example, lables can be used to
+# group multiple skillets of the same type (pan-os skillets labeled as version: 9.0 for example)
+labels:
+  collection:
+    - Datacenter Virtualization
+
+
+# Variables will be presented to the user via the Panhandler GUI. These values will then be passed to
+# to the python script
+variables:
+  - name: host
+    description: vCenter IP or FQDN
+    default: 10.197.140.102
+    type_hint: text
+  - name: user
+    description: vCenter admin user name
+    default: 10.197.140.102
+    type_hint: text
+  - name: password
+    description: vCenter admin password
+    default: xxxxxxxx
+    type_hint: password
+  - name: vmname
+    description: VM-Series VM name in vCenter
+    default: pa-vm
+    type_hint: text
+  - name: pan_host
+    description: VM-Series management IP or FQDN
+    default: 192.168.55.10
+    type_hint: text
+  - name: pan_user
+    description: VM-Series user name
+    default: admin
+    type_hint: text
+  - name: pan_pass
+    description: VM-Series user password
+    default: admin
+    type_hint: password
+  - name: api_key
+    description: Licensing API Key (From support portal)
+    default: xxxxxxxx
+    type_hint: text
+  - name: model
+    description: VM-Series target model.
+    default: 50
+    type_hint: dropdown
+    dd_list:
+      - key: 50
+        value: 50
+      - key: 100
+        value: 100
+      - key: 300
+        value: 300
+      - key: 500
+        value: 500
+      - key: 700
+        value: 700
+  - name: auth_code
+    description: VM-Series Licensing Authcode
+    default: xxxxxxx
+    type_hint: text
+
+snippets:
+  - name: script
+    file: scale_pavm.py

@@ -1,11 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="74f41841-7aab-4003-9726-79ce68f32af0" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/CN-Series-Deployer.py" beforeDir="false" afterPath="$PROJECT_DIR$/CN-Series-Deployer.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/yamls/native/lite/pan-cn-mgmt.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/yamls/native/lite/pan-cn-mgmt.yaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/yamls/native/lite/pan-cn-pv-local.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/yamls/native/lite/pan-cn-pv-local.yaml" afterDir="false" />
-    </list>
+    <list default="true" id="74f41841-7aab-4003-9726-79ce68f32af0" name="Default Changelist" comment="" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -43,8 +39,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/CN-Series-Deployer.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="293">
-              <caret line="567" column="35" selection-start-line="567" selection-start-column="35" selection-end-line="567" selection-end-column="35" />
+            <state relative-caret-position="194">
+              <caret line="423" column="19" selection-start-line="423" selection-start-column="4" selection-end-line="423" selection-end-column="19" />
               <folding>
                 <element signature="e#261#271#0" expanded="true" />
               </folding>
@@ -63,7 +59,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>k8s_type</find>
       <find>tokens</find>
       <find>activate_license</find>
       <find>panorama_commit</find>
@@ -93,6 +88,7 @@
       <find>cn_pin_value</find>
       <find>create_cn_series</find>
       <find>create_auth_key</find>
+      <find>run_ssh_command</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -249,8 +245,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/CN-Series-Deployer.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="293">
-          <caret line="567" column="35" selection-start-line="567" selection-start-column="35" selection-end-line="567" selection-end-column="35" />
+        <state relative-caret-position="194">
+          <caret line="423" column="19" selection-start-line="423" selection-start-column="4" selection-end-line="423" selection-end-column="19" />
           <folding>
             <element signature="e#261#271#0" expanded="true" />
           </folding>

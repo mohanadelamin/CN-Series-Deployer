@@ -41,8 +41,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/CN-Series-Deployer.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="104">
-              <caret line="827" column="92" lean-forward="true" selection-start-line="827" selection-start-column="92" selection-end-line="827" selection-end-column="92" />
+            <state relative-caret-position="-406">
+              <caret line="805" column="38" selection-start-line="805" selection-start-column="38" selection-end-line="805" selection-end-column="38" />
               <folding>
                 <element signature="e#261#271#0" expanded="true" />
               </folding>
@@ -61,11 +61,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>panorama_commit</find>
-      <find>wait_f</find>
-      <find>wait_for_panos(pn_api_conn, timeout)</find>
-      <find>commit</find>
-      <find>Latest</find>
       <find>update</find>
       <find>download_plugin</find>
       <find>job</find>
@@ -86,11 +81,16 @@
       <find>cn_bnd</find>
       <find>cn_bundle</find>
       <find>cn_pin_value</find>
-      <find>create_cn_series</find>
-      <find>create_auth_key</find>
       <find>run_ssh_command</find>
       <find>openshift</find>
       <find>yaml_base_url</find>
+      <find>print</find>
+      <find>create_cn_series</find>
+      <find>create_auth_key</find>
+      <find>auth_key</find>
+      <find>pn_api_conn</find>
+      <find>create_panos_device</find>
+      <find>ssh_login</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -202,7 +202,6 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="23" width="1920" height="1009" extended-state="6" />
-    <editor active="true" />
     <layout>
       <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.1864139" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
@@ -247,8 +246,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/CN-Series-Deployer.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="104">
-          <caret line="827" column="92" lean-forward="true" selection-start-line="827" selection-start-column="92" selection-end-line="827" selection-end-column="92" />
+        <state relative-caret-position="-406">
+          <caret line="805" column="38" selection-start-line="805" selection-start-column="38" selection-end-line="805" selection-end-column="38" />
           <folding>
             <element signature="e#261#271#0" expanded="true" />
           </folding>

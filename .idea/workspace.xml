@@ -1,0 +1,282 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="74f41841-7aab-4003-9726-79ce68f32af0" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/CN-Series-Deployer.py" beforeDir="false" afterPath="$PROJECT_DIR$/CN-Series-Deployer.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/yamls/k8s/full/pan-cn-mgmt-configmap.yaml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/yamls/k8s/full/pan-cn-mgmt-secret.yaml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/yamls/k8s/full/pan-cn-mgmt.yaml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/yamls/k8s/full/pan-cn-ngfw-configmap.yaml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/yamls/k8s/full/pan-cn-ngfw.yaml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/yamls/k8s/full/pan-cn-pv-local.yaml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/yamls/k8s/full/pan-cn-pv-manual.yaml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/yamls/k8s/full/pan-cni-configmap.yaml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/yamls/k8s/full/pan-cni-serviceaccount.yaml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/yamls/k8s/full/pan-cni.yaml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/yamls/k8s/full/pan-mgmt-serviceaccount.yaml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/yamls/k8s/full/plugin-serviceaccount.yaml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/yamls/k8s/lite/pan-cn-mgmt-configmap.yaml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/yamls/k8s/lite/pan-cn-mgmt-secret.yaml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/yamls/k8s/lite/pan-cn-mgmt.yaml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/yamls/k8s/lite/pan-cn-ngfw-configmap.yaml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/yamls/k8s/lite/pan-cn-ngfw.yaml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/yamls/k8s/lite/pan-cn-pv-local.yaml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/yamls/k8s/lite/pan-cn-pv-manual.yaml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/yamls/k8s/lite/pan-cni-configmap.yaml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/yamls/k8s/lite/pan-cni-serviceaccount.yaml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/yamls/k8s/lite/pan-cni.yaml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/yamls/k8s/lite/pan-mgmt-serviceaccount.yaml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/yamls/k8s/lite/plugin-serviceaccount.yaml" beforeDir="false" />
+    </list>
+    <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileEditorManager">
+    <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/.meta-cnc.yaml">
+          <provider selected="true" editor-type-id="text-editor" />
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/requirements.txt">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="30">
+              <caret line="2" column="22" selection-start-line="2" selection-start-column="22" selection-end-line="2" selection-end-column="22" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/README.md">
+          <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
+            <state split_layout="SPLIT">
+              <first_editor relative-caret-position="30">
+                <caret line="2" selection-start-line="1" selection-start-column="19" selection-end-line="2" />
+              </first_editor>
+              <second_editor />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/CN-Series-Deployer.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="209">
+              <caret line="43" column="102" selection-start-line="43" selection-start-column="102" selection-end-line="43" selection-end-column="102" />
+              <folding>
+                <element signature="e#261#271#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+    </leaf>
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Python Script" />
+      </list>
+    </option>
+  </component>
+  <component name="FindInProjectRecents">
+    <findStrings>
+      <find>hours</find>
+      <find>k8s-token</find>
+      <find>create_k8s_token</find>
+      <find>eyJhbGciOiJSUzI1NiIsImtpZCI6IkhER1JIbTBJdWhpR1VSYVphYUNLY3NiN3VjdURpeVhDbHBHWElRVlVlRXcifQ.eyJpc3MiOiJrdWJlcm5ldGVzL3NlcnZpY2VhY2NvdW50Iiwia3ViZXJuZXRlcy5pby9zZXJ2aWNlYWNjb3VudC9uYW1lc3BhY2UiOiJkZWZhdWx0Iiwia3ViZXJuZXRlcy5pby9zZXJ2aWNlYWNjb3VudC9zZWNyZXQubmFtZSI6ImRlZmF1bHQtdG9rZW4tYmQ5OGoiLCJrdWJlcm5ldGVzLmlvL3NlcnZpY2VhY2NvdW50L3NlcnZpY2UtYWNjb3VudC5uYW1lIjoiZGVmYXVsdCIsImt1YmVybmV0ZXMuaW8vc2VydmljZWFjY291bnQvc2VydmljZS1hY2NvdW50LnVpZCI6ImIyYzgwODE1LTE4NjctNGU5OS04YzAzLTczMDllNjJlYThmYyIsInN1YiI6InN5c3RlbTpzZXJ2aWNlYWNjb3VudDpkZWZhdWx0OmRlZmF1bHQifQ.b8xeJahdnfgqwNXuDv8IsWWNFfJzEDrTZevk2rk_8m60qb3fUHeFjZbCnMUjKny7GtDGPaYRc_ofNnEUxmwdAcLL6DjyAhGnbCsjekNFgS-ub_5Gqm5FsAtUpod_NOWGPxdmp1uo53JBXsfbgtajoPeReKHDf81bJbQISEBXdZ4LiED9KSdzmJbpLCmeD2mMnNFICwCgxloyWEcD0ihNhEHp8eRLY5eUmZKHo0TP_rDucHqCkd5uFNNEHBCeUlr3_CZ-46g_gloKjX7PzreGDm5_a1EJsK8cBQS3MU9LO_LOcL7WarLoWvKtsVLtlNw7yF0aUhgsZJz0Ow4QAQer6g</find>
+      <find>k8s_token</find>
+      <find>kuber</find>
+      <find>token</find>
+      <find>configure_k8s_plugin</find>
+      <find>license</find>
+      <find>licen</find>
+      <find>k8s_type</find>
+      <find>tokens</find>
+      <find>activate_license</find>
+      <find>create_k8s_plugin_svc_account</find>
+      <find>panorama_commit</find>
+      <find>wait_f</find>
+      <find>wait_for_panos(pn_api_conn, timeout)</find>
+      <find>commit</find>
+      <find>Latest</find>
+      <find>update</find>
+      <find>download_plugin</find>
+      <find>job</find>
+      <find>k8s_dict</find>
+      <find>update_plugin_list</find>
+      <find>find_latest_k8s_plugin</find>
+      <find>latest_k8s</find>
+      <find>install_k8s_plugin</find>
+      <find>wait_for_panos</find>
+      <find>True</find>
+      <find>configure_panorama</find>
+    </findStrings>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="IdeDocumentHistory">
+    <option name="CHANGED_PATHS">
+      <list>
+        <option value="$PROJECT_DIR$/README.md" />
+        <option value="$PROJECT_DIR$/requirements.txt" />
+        <option value="$PROJECT_DIR$/CN-Series-Deployer.py" />
+      </list>
+    </option>
+  </component>
+  <component name="ProjectConfigurationFiles">
+    <option name="files">
+      <list>
+        <option value="$PROJECT_DIR$/.idea/vcs.xml" />
+        <option value="$PROJECT_DIR$/.idea/DCV-CN-Series-Deployer.iml" />
+        <option value="$PROJECT_DIR$/.idea/misc.xml" />
+        <option value="$PROJECT_DIR$/.idea/vcs.xml" />
+        <option value="$PROJECT_DIR$/.idea/modules.xml" />
+      </list>
+    </option>
+  </component>
+  <component name="ProjectFrameBounds" extendedState="6">
+    <option name="x" value="249" />
+    <option name="y" value="23" />
+    <option name="width" value="1440" />
+    <option name="height" value="830" />
+  </component>
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
+  <component name="ProjectView">
+    <navigator proportions="" version="1">
+      <foldersAlwaysOnTop value="true" />
+    </navigator>
+    <panes>
+      <pane id="ProjectPane">
+        <subPane>
+          <expand>
+            <path>
+              <item name="DCV-CN-Series-Deployer" type="b2602c69:ProjectViewProjectNode" />
+              <item name="DCV-CN-Series-Deployer" type="462c0819:PsiDirectoryNode" />
+            </path>
+          </expand>
+          <select />
+        </subPane>
+      </pane>
+      <pane id="Scope" />
+    </panes>
+  </component>
+  <component name="PropertiesComponent">
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="settings.editor.selected.configurable" value="preferences.sourceCode.Python" />
+  </component>
+  <component name="RunDashboard">
+    <option name="ruleStates">
+      <list>
+        <RuleState>
+          <option name="name" value="ConfigurationTypeDashboardGroupingRule" />
+        </RuleState>
+        <RuleState>
+          <option name="name" value="StatusDashboardGroupingRule" />
+        </RuleState>
+      </list>
+    </option>
+  </component>
+  <component name="RunManager">
+    <configuration name="CN-Series-Deployer" type="PythonConfigurationType" factoryName="Python" temporary="true">
+      <module name="DCV-CN-Series-Deployer" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/CN-Series-Deployer.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Python.CN-Series-Deployer" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="SvnConfiguration">
+    <configuration />
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="74f41841-7aab-4003-9726-79ce68f32af0" name="Default Changelist" comment="" />
+      <created>1597135786066</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1597135786066</updated>
+    </task>
+    <servers />
+  </component>
+  <component name="ToolWindowManager">
+    <frame x="0" y="23" width="1440" height="830" extended-state="6" />
+    <editor active="true" />
+    <layout>
+      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.24947146" />
+      <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
+      <window_info id="Favorites" order="2" side_tool="true" />
+      <window_info anchor="bottom" id="Message" order="0" />
+      <window_info anchor="bottom" id="Find" order="1" />
+      <window_info anchor="bottom" id="Run" order="2" weight="0.32867134" />
+      <window_info anchor="bottom" id="Debug" order="3" weight="0.4" />
+      <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
+      <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
+      <window_info anchor="bottom" id="TODO" order="6" />
+      <window_info anchor="bottom" id="Version Control" order="7" />
+      <window_info active="true" anchor="bottom" id="Terminal" order="8" visible="true" weight="0.32867134" />
+      <window_info anchor="bottom" id="Event Log" order="9" side_tool="true" />
+      <window_info anchor="bottom" id="Python Console" order="10" />
+      <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
+      <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
+      <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
+    </layout>
+  </component>
+  <component name="editorHistoryManager">
+    <entry file="file://$PROJECT_DIR$/scale_pavm.py" />
+    <entry file="file://$PROJECT_DIR$/.meta-cnc.yaml">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/requirements.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="30">
+          <caret line="2" column="22" selection-start-line="2" selection-start-column="22" selection-end-line="2" selection-end-column="22" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/README.md">
+      <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
+        <state split_layout="SPLIT">
+          <first_editor relative-caret-position="30">
+            <caret line="2" selection-start-line="1" selection-start-column="19" selection-end-line="2" />
+          </first_editor>
+          <second_editor />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/CN-Series-Deployer.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="209">
+          <caret line="43" column="102" selection-start-line="43" selection-start-column="102" selection-end-line="43" selection-end-column="102" />
+          <folding>
+            <element signature="e#261#271#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+  </component>
+</project>

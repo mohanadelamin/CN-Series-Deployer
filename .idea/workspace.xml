@@ -3,30 +3,8 @@
   <component name="ChangeListManager">
     <list default="true" id="74f41841-7aab-4003-9726-79ce68f32af0" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/CN-Series-Deployer.py" beforeDir="false" afterPath="$PROJECT_DIR$/CN-Series-Deployer.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/yamls/k8s/full/pan-cn-mgmt-configmap.yaml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/yamls/k8s/full/pan-cn-mgmt-secret.yaml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/yamls/k8s/full/pan-cn-mgmt.yaml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/yamls/k8s/full/pan-cn-ngfw-configmap.yaml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/yamls/k8s/full/pan-cn-ngfw.yaml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/yamls/k8s/full/pan-cn-pv-local.yaml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/yamls/k8s/full/pan-cn-pv-manual.yaml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/yamls/k8s/full/pan-cni-configmap.yaml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/yamls/k8s/full/pan-cni-serviceaccount.yaml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/yamls/k8s/full/pan-cni.yaml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/yamls/k8s/full/pan-mgmt-serviceaccount.yaml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/yamls/k8s/full/plugin-serviceaccount.yaml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/yamls/k8s/lite/pan-cn-mgmt-configmap.yaml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/yamls/k8s/lite/pan-cn-mgmt-secret.yaml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/yamls/k8s/lite/pan-cn-mgmt.yaml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/yamls/k8s/lite/pan-cn-ngfw-configmap.yaml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/yamls/k8s/lite/pan-cn-ngfw.yaml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/yamls/k8s/lite/pan-cn-pv-local.yaml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/yamls/k8s/lite/pan-cn-pv-manual.yaml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/yamls/k8s/lite/pan-cni-configmap.yaml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/yamls/k8s/lite/pan-cni-serviceaccount.yaml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/yamls/k8s/lite/pan-cni.yaml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/yamls/k8s/lite/pan-mgmt-serviceaccount.yaml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/yamls/k8s/lite/plugin-serviceaccount.yaml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/yamls/native/lite/pan-cn-mgmt.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/yamls/native/lite/pan-cn-mgmt.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/yamls/native/lite/pan-cn-pv-local.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/yamls/native/lite/pan-cn-pv-local.yaml" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -65,8 +43,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/CN-Series-Deployer.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="209">
-              <caret line="43" column="102" selection-start-line="43" selection-start-column="102" selection-end-line="43" selection-end-column="102" />
+            <state relative-caret-position="293">
+              <caret line="567" column="35" selection-start-line="567" selection-start-column="35" selection-end-line="567" selection-end-column="35" />
               <folding>
                 <element signature="e#261#271#0" expanded="true" />
               </folding>
@@ -85,20 +63,9 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>hours</find>
-      <find>k8s-token</find>
-      <find>create_k8s_token</find>
-      <find>eyJhbGciOiJSUzI1NiIsImtpZCI6IkhER1JIbTBJdWhpR1VSYVphYUNLY3NiN3VjdURpeVhDbHBHWElRVlVlRXcifQ.eyJpc3MiOiJrdWJlcm5ldGVzL3NlcnZpY2VhY2NvdW50Iiwia3ViZXJuZXRlcy5pby9zZXJ2aWNlYWNjb3VudC9uYW1lc3BhY2UiOiJkZWZhdWx0Iiwia3ViZXJuZXRlcy5pby9zZXJ2aWNlYWNjb3VudC9zZWNyZXQubmFtZSI6ImRlZmF1bHQtdG9rZW4tYmQ5OGoiLCJrdWJlcm5ldGVzLmlvL3NlcnZpY2VhY2NvdW50L3NlcnZpY2UtYWNjb3VudC5uYW1lIjoiZGVmYXVsdCIsImt1YmVybmV0ZXMuaW8vc2VydmljZWFjY291bnQvc2VydmljZS1hY2NvdW50LnVpZCI6ImIyYzgwODE1LTE4NjctNGU5OS04YzAzLTczMDllNjJlYThmYyIsInN1YiI6InN5c3RlbTpzZXJ2aWNlYWNjb3VudDpkZWZhdWx0OmRlZmF1bHQifQ.b8xeJahdnfgqwNXuDv8IsWWNFfJzEDrTZevk2rk_8m60qb3fUHeFjZbCnMUjKny7GtDGPaYRc_ofNnEUxmwdAcLL6DjyAhGnbCsjekNFgS-ub_5Gqm5FsAtUpod_NOWGPxdmp1uo53JBXsfbgtajoPeReKHDf81bJbQISEBXdZ4LiED9KSdzmJbpLCmeD2mMnNFICwCgxloyWEcD0ihNhEHp8eRLY5eUmZKHo0TP_rDucHqCkd5uFNNEHBCeUlr3_CZ-46g_gloKjX7PzreGDm5_a1EJsK8cBQS3MU9LO_LOcL7WarLoWvKtsVLtlNw7yF0aUhgsZJz0Ow4QAQer6g</find>
-      <find>k8s_token</find>
-      <find>kuber</find>
-      <find>token</find>
-      <find>configure_k8s_plugin</find>
-      <find>license</find>
-      <find>licen</find>
       <find>k8s_type</find>
       <find>tokens</find>
       <find>activate_license</find>
-      <find>create_k8s_plugin_svc_account</find>
       <find>panorama_commit</find>
       <find>wait_f</find>
       <find>wait_for_panos(pn_api_conn, timeout)</find>
@@ -115,6 +82,17 @@
       <find>wait_for_panos</find>
       <find>True</find>
       <find>configure_panorama</find>
+      <find>create_k8s_plugin_svc_account</find>
+      <find>request</find>
+      <find>re.ma</find>
+      <find>cn_to</find>
+      <find>pan_hos</find>
+      <find>pn_cg</find>
+      <find>cn_bnd</find>
+      <find>cn_bundle</find>
+      <find>cn_pin_value</find>
+      <find>create_cn_series</find>
+      <find>create_auth_key</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -167,6 +145,7 @@
     </panes>
   </component>
   <component name="PropertiesComponent">
+    <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="settings.editor.selected.configurable" value="preferences.sourceCode.Python" />
   </component>
@@ -224,10 +203,10 @@
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="0" y="23" width="1440" height="830" extended-state="6" />
+    <frame x="0" y="23" width="1920" height="1009" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.24947146" />
+      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.1864139" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
@@ -238,7 +217,7 @@
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
       <window_info anchor="bottom" id="TODO" order="6" />
       <window_info anchor="bottom" id="Version Control" order="7" />
-      <window_info active="true" anchor="bottom" id="Terminal" order="8" visible="true" weight="0.32867134" />
+      <window_info active="true" anchor="bottom" id="Terminal" order="8" visible="true" weight="0.26286355" />
       <window_info anchor="bottom" id="Event Log" order="9" side_tool="true" />
       <window_info anchor="bottom" id="Python Console" order="10" />
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
@@ -270,8 +249,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/CN-Series-Deployer.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="209">
-          <caret line="43" column="102" selection-start-line="43" selection-start-column="102" selection-end-line="43" selection-end-column="102" />
+        <state relative-caret-position="293">
+          <caret line="567" column="35" selection-start-line="567" selection-start-column="35" selection-end-line="567" selection-end-column="35" />
           <folding>
             <element signature="e#261#271#0" expanded="true" />
           </folding>

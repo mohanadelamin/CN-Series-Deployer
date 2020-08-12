@@ -59,21 +59,50 @@ def get_args():
     """
 
     parser = argparse.ArgumentParser(description='Process args for Panorama and K8S configuration:')
-    parser.add_argument('--pn_ip', required=True, action='store', help='Panorama management IP address')
-    parser.add_argument('--pn_user', required=True, action='store', help='Panorama username')
-    parser.add_argument('--pn_pass', required=True, action='store', help='Panorama Password')
-    parser.add_argument('--k8s_ip', required=True, action='store', help='K8S master node IP address')
-    parser.add_argument('--k8s_user', required=True, action='store', help='Panorama username')
-    parser.add_argument('--k8s_pass', required=True, action='store', help='Panorama Password')
-    parser.add_argument('--k8s_type', required=True, default='k8s', action='store', help='Cluster Type, k8s or openshift.')
-    parser.add_argument('--k8s_port', required=True, default='6443', action='store', help='k8s port, default 6443')
-    parser.add_argument('--k8s_mode', required=True, default='lite', action='store', help='deployment mode. lite or full')
-    parser.add_argument('--k8s_name', required=True, action='store', help='K8S Cluster name')
-    parser.add_argument('--pn_dg', required=True, action='store', help='Panorama device group')
-    parser.add_argument('--pn_tmpl', required=True, action='store', help='Panorama Collector Group')
-    parser.add_argument('--pn_cg', required=True, action='store', help='Panorama device group')
-    parser.add_argument('--auth_code', required=True, action='store', help='CN-Series Auth_code')
-    parser.add_argument('--tokens', required=True, default=1, action='store', help='Number of CN-Series tokens.')
+    parser.add_argument('--pn_ip', required=True,
+                        action='store', help='Panorama management IP address')
+    parser.add_argument('--pn_user', required=True,
+                        action='store', help='Panorama username')
+    parser.add_argument('--pn_pass', required=True,
+                        action='store', help='Panorama Password')
+    parser.add_argument('--k8s_ip', required=True,
+                        action='store', help='K8S master node IP address')
+    parser.add_argument('--k8s_user', required=True,
+                        action='store', help='Panorama username')
+    parser.add_argument('--k8s_pass', required=True,
+                        action='store', help='Panorama Password')
+    parser.add_argument('--k8s_type', required=True,
+                        action='store', default='k8s', help='Cluster Type, k8s or openshift.')
+    parser.add_argument('--k8s_port', required=True,
+                        action='store', default='6443', help='k8s port, default 6443')
+    parser.add_argument('--k8s_mode', required=True,
+                        action='store', default='lite', help='deployment mode. lite or full')
+    parser.add_argument('--k8s_name', required=True,
+                        action='store', help='K8S Cluster name')
+    parser.add_argument('--pn_dg', required=True,
+                        action='store', help='Panorama device group')
+    parser.add_argument('--pn_tmpl', required=True,
+                        action='store', help='Panorama Collector Group')
+    parser.add_argument('--pn_cg', required=True,
+                        action='store', help='Panorama device group')
+    parser.add_argument('--auth_code', required=True,
+                        action='store', help='CN-Series Auth_code')
+    parser.add_argument('--cn_bnd', required=True,
+                        action='store', help='CN-Series bundle')
+    parser.add_argument('--tokens', required=True, default=1,
+                        action='store', help='Number of CN-Series tokens.')
+    parser.add_argument('--cn_mgmt_image', required=True,
+                        action='store', help='CN-MGMT Image registry path')
+    parser.add_argument('--cn_ngfw_image', required=True,
+                        action='store', help='CN-NGFW Image registry path')
+    parser.add_argument('--cn_init_image', required=True,
+                        action='store', help='CN-MGMT init Image registry path')
+    parser.add_argument('--cn_cni_image', required=True,
+                        action='store', help='CNI Image registry path')
+    parser.add_argument('--cn_pin_id', required=False,
+                        action='store', help='CN-Series registration pin id')
+    parser.add_argument('--cn_pin_value', required=False,
+                        action='store', help='CN-Series registration pin value')
 
     args = parser.parse_args()
     return args
@@ -181,6 +210,20 @@ def check_template_stack(pn_api_conn, template_stack):
         return False
 
 
+def check_collector_group(pn_api_conn, cg):
+    try:
+        element_response = pn_api_conn.op(cmd="show log-collector-group all")
+    except PanDeviceError as msg:
+        error(msg)
+        time.sleep(5)
+    else:
+        device_groups = element_response.findall('.//entry')
+        for n in device_groups:
+            if cg == n.attrib['name']:
+                return True
+        return False
+
+
 def check_device_group(pn_api_conn, dg):
     try:
         element_response = pn_api_conn.op(cmd="show devicegroups")
@@ -196,39 +239,83 @@ def check_device_group(pn_api_conn, dg):
 
 
 def configure_template(pn_ssh_conn, template):
-    panorama_config_prompt = '.*# '
-    with SSHClientInteraction(pn_ssh_conn, timeout=10, display=False) as interact:
-        interact.send('configure')
-        interact.expect(panorama_config_prompt)
-        interact.send('set template {} config  vsys vsys1'.format(template))
-        interact.expect(panorama_config_prompt)
-        interact.send('set template {} settings default-vsys vsys1'.format(template))
-        interact.expect(panorama_config_prompt)
-        interact.send('exit')
-        info("Template {} Created".format(template))
+    try:
+        panorama_config_prompt = '.*# '
+        with SSHClientInteraction(pn_ssh_conn, timeout=10, display=False) as interact:
+            interact.send('configure')
+            interact.expect(panorama_config_prompt)
+            interact.send('set template {} config  vsys vsys1'.format(template))
+            interact.expect(panorama_config_prompt)
+            interact.send('set template {} settings default-vsys vsys1'.format(template))
+            interact.expect(panorama_config_prompt)
+            interact.send('exit')
+            info("Template {} Created".format(template))
+    except:
+        error("I can not create a template")
+        sys.exit()
 
 
 def configure_template_stack(pn_ssh_conn, template_stack):
-    panorama_config_prompt = '.*# '
-    with SSHClientInteraction(pn_ssh_conn, timeout=10, display=False) as interact:
-        interact.send('configure')
-        interact.expect(panorama_config_prompt)
-        interact.send('set template-stack {} settings'.format(template_stack))
-        interact.expect(panorama_config_prompt)
-        interact.send('set template-stack {} templates {}'.format(template_stack,template_stack + '-tmp'))
-        interact.expect(panorama_config_prompt)
-        interact.send('exit')
-        info("Template Stack {} Created".format(template_stack))
+    try:
+        panorama_config_prompt = '.*# '
+        with SSHClientInteraction(pn_ssh_conn, timeout=10, display=False) as interact:
+            interact.send('configure')
+            interact.expect(panorama_config_prompt)
+            interact.send('set template-stack {} settings'.format(template_stack))
+            interact.expect(panorama_config_prompt)
+            interact.send('set template-stack {} templates {}'.format(template_stack,template_stack + '-tmp'))
+            interact.expect(panorama_config_prompt)
+            interact.send('exit')
+            info("Template Stack {} Created".format(template_stack))
+    except:
+        error("I can not create a template stack")
+        sys.exit()
 
 
 def configure_device_group(pn_ssh_conn, dg):
-    panorama_config_prompt = '.*# '
-    with SSHClientInteraction(pn_ssh_conn, timeout=10, display=False) as interact:
-        interact.send('configure')
-        interact.expect(panorama_config_prompt)
-        interact.send('set device-group {}'.format(dg))
-        interact.expect(panorama_config_prompt)
-        interact.send('exit')
+    try:
+        panorama_config_prompt = '.*# '
+        with SSHClientInteraction(pn_ssh_conn, timeout=10, display=False) as interact:
+            interact.send('configure')
+            interact.expect(panorama_config_prompt)
+            interact.send('set device-group {}'.format(dg))
+            interact.expect(panorama_config_prompt)
+            interact.send('exit')
+    except:
+        error("I can not create a device group")
+        sys.exit()
+
+
+def configure_collector_group(pn_ssh_conn, cg):
+    try:
+        panorama_config_prompt = '.*# '
+        with SSHClientInteraction(pn_ssh_conn, timeout=10, display=False) as interact:
+            interact.send('configure')
+            interact.expect(panorama_config_prompt)
+            interact.send('set log-collector-group {}'.format(cg))
+            interact.expect(panorama_config_prompt)
+            interact.send('exit')
+    except:
+        error("I can not create a device group")
+        sys.exit()
+
+
+def create_auth_key(pn_ssh_conn):
+    try:
+        duration = 48
+        panorama_op_prompt = '.*> '
+        with SSHClientInteraction(pn_ssh_conn, timeout=10, display=False) as interact:
+            interact.send("request bootstrap vm-auth-key generate lifetime {}".format(duration))
+            interact.expect(panorama_op_prompt)
+            interact.send('exit')
+        auth_key_output = interact.current_output_clean
+        for l in auth_key_output.split('\n'):
+            if 'generated' in l:
+                auth_key = re.findall(r"\d{15,}", l)[0]
+                return auth_key
+    except:
+        error("I couldn't create bootstrapping auth key")
+        sys.exit()
 
 
 def check_k8s_plugin(pn_api_conn):
@@ -385,7 +472,7 @@ def create_k8s_plugin_svc_account(k8s_ssh_conn, base_url):
         return svc_account_b64
     except:
         error("I couldn't create the service account")
-        return False
+        sys.exit()
 
 
 def configure_panorama(pn_ssh_conn, panorama_dict, k8s_dict):
@@ -449,6 +536,114 @@ def panorama_commit(pn_api_conn):
         error("I can not commit to Panorama.")
 
 
+def create_cn_series(k8s_ssh_conn, base_url, cn_images_dict, panorama_dict):
+    # try:
+        info("Creating CN-CNI account.")
+        k8s_cmd = "curl -s -k {} | kubectl apply -f -".format(base_url + "pan-cni-serviceaccount.yaml")
+        k8s_output = run_ssh_command(k8s_ssh_conn, k8s_cmd)
+        for l in k8s_output.rstrip().split('\n'):
+            info(l)
+
+        info("Creating CN-MGMT service account.")
+        k8s_cmd = "curl -s -k {} | kubectl apply -f -".format(base_url + "pan-mgmt-serviceaccount.yaml")
+        k8s_output = run_ssh_command(k8s_ssh_conn, k8s_cmd)
+        for l in k8s_output.rstrip().split('\n'):
+            info(l)
+
+        info("Creating CN-CNI config map.")
+        k8s_cmd = "curl -s -k {} | kubectl apply -f -".format(base_url + "pan-cni-configmap.yaml")
+        k8s_output = run_ssh_command(k8s_ssh_conn, k8s_cmd)
+        for l in k8s_output.rstrip().split('\n'):
+            info(l)
+
+        info("Creating CN-CNI pods.")
+        k8s_cmd = "curl -s -k {} " \
+                  "| sed 's/<your-private-registry-image-path>/{}/g'" \
+                  "| kubectl apply -f -".format(base_url + "pan-cni.yaml",
+                                                cn_images_dict['cn_cni_image'].replace('/','\/'))
+        k8s_output = run_ssh_command(k8s_ssh_conn, k8s_cmd)
+        for l in k8s_output.rstrip().split('\n'):
+            info(l)
+
+        if panorama_dict['cn_pin_id'] and panorama_dict['cn_pin_value']:
+            info("Creating CN-MGMT secret")
+            k8s_cmd = "curl -s -k {} " \
+                      "| sed 's/<panorama-auth-key>/{}/g'" \
+                      "| sed 's/<PIN Id>/{}/g'" \
+                      "| sed 's/<PIN-Value>/{}/g'" \
+                      "| kubectl apply -f -".format(base_url + "pan-cn-mgmt-secret.yaml",
+                                                    panorama_dict['auth_key'],
+                                                    panorama_dict['cn_pin_ip'],
+                                                    panorama_dict['cn_pin_value'])
+            k8s_output = run_ssh_command(k8s_ssh_conn, k8s_cmd)
+            for l in k8s_output.rstrip().split('\n'):
+                info(l)
+        else:
+            info("Creating CN-MGMT secret")
+            info("Commenting CN-Series auto registration pin id and value lines.")
+            k8s_cmd = "curl -s -k {} " \
+                      "| sed 's/<panorama-auth-key>/{}/g'" \
+                      "| sed '/.*CN-SERIES-AUTO-REGISTRATION-PIN.*/s/^/#/g'" \
+                      "| kubectl apply -f -".format(base_url + "pan-cn-mgmt-secret.yaml", panorama_dict['auth_key'])
+            k8s_output = run_ssh_command(k8s_ssh_conn, k8s_cmd)
+            for l in k8s_output.rstrip().split('\n'):
+                info(l)
+
+        info("Creating CN-MGMT config map")
+        k8s_cmd = "curl -s -k {} " \
+                  "| sed 's/<panorama-IP>/{}/g'" \
+                  "| sed 's/<panorama-device-group>/{}/g'"\
+                  "| sed 's/<panorama-template-stack>/{}/g'" \
+                  "| sed 's/<panorama-collector-group>/{}/g'" \
+                  "| sed 's/<license-bundle-type>/{}/g'" \
+                  "| kubectl apply -f -".format(base_url + "pan-cn-mgmt-configmap.yaml",
+                                                panorama_dict['pan_hostname'],
+                                                panorama_dict['device_group'],
+                                                panorama_dict['template_stack'],
+                                                panorama_dict['c_group'],
+                                                panorama_dict['cn_bundle'])
+        k8s_output = run_ssh_command(k8s_ssh_conn, k8s_cmd)
+        for l in k8s_output.rstrip().split('\n'):
+            info(l)
+
+        info("Creating local PVs for CN-MGMT Pods")
+        k8s_cmd = "curl -s -k {} | kubectl apply -f -".format(base_url + "pan-cn-pv-local.yaml")
+        k8s_output = run_ssh_command(k8s_ssh_conn, k8s_cmd)
+        for l in k8s_output.rstrip().split('\n'):
+            info(l)
+
+        info("Creating CN-MGMT pods.")
+        k8s_cmd = "curl -s -k {} " \
+                  "| sed '0,/<your-private-registry-image-path>/s/<your-private-registry-image-path>/{}/'" \
+                  "| sed '0,/<your-private-registry-image-path>/s/<your-private-registry-image-path>/{}/'" \
+                  "| kubectl apply -f -".format(base_url + "pan-cn-mgmt.yaml",
+                                                cn_images_dict['cn_mgmt_image'].replace('/','\/'),
+                                                cn_images_dict['cn_cni_image'].replace('/','\/'))
+        k8s_output = run_ssh_command(k8s_ssh_conn, k8s_cmd)
+        for l in k8s_output.rstrip().split('\n'):
+            info(l)
+
+        info("Creating CN-NGFW config map.")
+        k8s_cmd = "curl -s -k {} | kubectl apply -f -".format(base_url + "pan-cn-ngfw-configmap.yaml")
+        k8s_output = run_ssh_command(k8s_ssh_conn, k8s_cmd)
+        for l in k8s_output.rstrip().split('\n'):
+            info(l)
+
+        info("Creating CN-NGFW pods.")
+        k8s_cmd = "curl -s -k {} " \
+                  "| sed 's/<your-private-registry-image-path>/{}/g'" \
+                  "| kubectl apply -f -".format(base_url + "pan-cn-ngfw.yaml",
+                                                cn_images_dict['cn_ngfw_image'].replace('/','\/'))
+        k8s_output = run_ssh_command(k8s_ssh_conn, k8s_cmd)
+        for l in k8s_output.rstrip().split('\n'):
+            info(l)
+
+        return True
+    # except:
+    #     error("CN-Series deployment fails")
+    #     sys.exit()
+
+
 def prettify(elem):
     """Return a pretty-printed XML string for the Element.
     """
@@ -483,8 +678,10 @@ def main():
     pan_password = args.pn_pass
     pan_template_stack = args.pn_tmpl
     pan_dg = args.pn_dg
+    pan_cg = args.pn_cg
     cn_auth_code = args.auth_code
     cn_tokens = args.tokens
+    cn_bundle = args.cn_bnd
 
     # Kubernetes info:
     k8s_ip = args.k8s_ip
@@ -493,6 +690,14 @@ def main():
     k8s_port = args.k8s_port
     k8s_mode = args.k8s_mode
     k8s_name = args.k8s_name
+
+    cn_pin_id = args.cn_pin_id
+    cn_pin_value = args.cn_pin_value
+
+    if not cn_pin_id or not cn_pin_value:
+        if k8s_mode == 'full':
+            error("You selected full mode. CN Series registration pin id and value is required.")
+            sys.exit()
 
     if args.k8s_type == 'native':
         k8s_type = 'Native-Kubernetes'
@@ -513,11 +718,26 @@ def main():
         else:
             yaml_base_url = OPENSHIFT_BASE_URL + "full/"
 
+    cn_images_dict = {
+        'cn_mgmt_image': args.cn_mgmt_image,
+        'cn_ngfw_image': args.cn_ngfw_image,
+        'cn_init_image': args.cn_init_image,
+        'cn_cni_image': args.cn_cni_image
+    }
+
     panorama_dict = {
+        'pan_hostname': pan_hostname,
+        'pan_username': pan_username,
+        'pan_password': pan_password,
         'device_group': pan_dg,
         'template_stack': pan_template_stack,
         'cn_auth_code': cn_auth_code,
-        'cn_tokesn': cn_tokens
+        'cn_tokens': cn_tokens,
+        'c_group': pan_cg,
+        'cn_bundle': cn_bundle,
+        'auth_key': '',
+        'cn_pin_id': cn_pin_id,
+        'cn_pin_value': cn_pin_value
     }
 
     k8s_dict = {
@@ -526,7 +746,8 @@ def main():
         'k8s_port': k8s_port,
         'k8s_type': k8s_type,
         'svc_acocunt_b64': '',
-        'yaml_base_url' : yaml_base_url
+        'yaml_base_url' : yaml_base_url,
+        'k8s_mode': k8s_mode
     }
 
     try:
@@ -550,65 +771,79 @@ def main():
         error("Panorama PAN-OS version is {}. I need Panorama that running PAN-OS 10.0 or later, Exiting....".format(panorama_version))
         sys.exit()
 
-    for p in range(5):
-        info("checking for Kubernetes plugin.")
-        k8s_plugin_version = check_k8s_plugin(pn_api_conn)
-        if k8s_plugin_version:
-            info("Kubernetes plugin version is {}".format(k8s_plugin_version.split('-')[1]))
-            break
-        else:
-            error("Kubernetes plugin is not installed, I will install the latest plugin")
-            info("Updating plugin list")
-            update_plugin_list(pn_api_conn)
+    # for p in range(5):
+    #     info("checking for Kubernetes plugin.")
+    #     k8s_plugin_version = check_k8s_plugin(pn_api_conn)
+    #     if k8s_plugin_version:
+    #         info("Kubernetes plugin version is {}".format(k8s_plugin_version.split('-')[1]))
+    #         break
+    #     else:
+    #         error("Kubernetes plugin is not installed, I will install the latest plugin")
+    #         info("Updating plugin list")
+    #         update_plugin_list(pn_api_conn)
+    #
+    #         latest_k8s = find_latest_k8s_plugin(pn_api_conn)
+    #         if latest_k8s['name']:
+    #             if latest_k8s['downloaded'] == 'no':
+    #                 download_plugin(pn_ssh_conn, latest_k8s['name'])
+    #             else:
+    #                 info("Kubernetes plugin {} Downloaded.".format(latest_k8s['name']))
+    #             if not wait_for_panos(pn_api_conn, time.time() + 60 * 5):
+    #                 error("Download job taking more than expected, exiting...")
+    #                 sys.exit()
+    #         else:
+    #             error("No Kubernetes plugin found. Check Panorama connection or install the plugin manually.")
+    #             sys.exit()
+    #
+    #         if latest_k8s['downloaded'] != 'no':
+    #             info("Installing kubernetes plugin.")
+    #             install_k8s_plugin(pn_ssh_conn, latest_k8s['name'])
+    #             if not wait_for_panos(pn_api_conn, time.time() + 60 * 5):
+    #                 error("Download job taking more than expected, exiting...")
+    #                 sys.exit()
+    #             info("Installation complete. I will check again if the plugin is installed properly.")
+    #         time.sleep(10)
+    #         panorama_commit(pn_api_conn)
+    #
+    # if check_device_group(pn_api_conn, pan_dg):
+    #     info("Device group {} Found.".format(pan_dg))
+    # else:
+    #     error("Device Group {} was not found in Panorama. "
+    #           "I will add the device group to Panorama config.".format(pan_dg))
+    #     configure_device_group(pn_ssh_conn, pan_dg)
+    #
+    # if check_template_stack(pn_api_conn, pan_template_stack):
+    #     info("Template Stack {} Found.".format(pan_template_stack))
+    # else:
+    #     info("Template Stack {} was not found in Panorama. "
+    #           "I will add a Template and Template Stack to Panorama config.".format(pan_template_stack))
+    #     configure_template(pn_ssh_conn, pan_template_stack + "-tmp")
+    #     configure_template_stack(pn_ssh_conn, pan_template_stack)
 
-            latest_k8s = find_latest_k8s_plugin(pn_api_conn)
-            if latest_k8s['name']:
-                if latest_k8s['downloaded'] == 'no':
-                    download_plugin(pn_ssh_conn, latest_k8s['name'])
-                else:
-                    info("Kubernetes plugin {} Downloaded.".format(latest_k8s['name']))
-                if not wait_for_panos(pn_api_conn, time.time() + 60 * 5):
-                    error("Download job taking more than expected, exiting...")
-                    sys.exit()
-            else:
-                error("No Kubernetes plugin found. Check Panorama connection or install the plugin manually.")
-                sys.exit()
-
-            if latest_k8s['downloaded'] != 'no':
-                info("Installing kubernetes plugin.")
-                install_k8s_plugin(pn_ssh_conn, latest_k8s['name'])
-                if not wait_for_panos(pn_api_conn, time.time() + 60 * 5):
-                    error("Download job taking more than expected, exiting...")
-                    sys.exit()
-                info("Installation complete. I will check again if the plugin is installed properly.")
-            time.sleep(10)
-            panorama_commit(pn_api_conn)
-
-    if check_device_group(pn_api_conn, pan_dg):
-        info("Device group {} Found.".format(pan_dg))
+    if check_collector_group(pn_api_conn, pan_cg):
+        info("Collector group {} found.".format(pan_cg))
     else:
-        error("Device Group {} was not found in Panorama. I will add the device group to Panorama config.".format(pan_dg))
-        configure_device_group(pn_ssh_conn, pan_dg)
+        info("Collector group {} not found. "
+             "I will add a dummy one you can add log collector to it later.".format(pan_cg))
+        configure_collector_group(pn_ssh_conn, pan_cg)
 
-    if check_template_stack(pn_api_conn, pan_template_stack):
-        info("Template Stack {} Found.".format(pan_template_stack))
-    else:
-        error("Template Stack {} was not found in Panorama. "
-              "I will add a Template and Template Stack to Panorama config.".format(pan_template_stack))
-        configure_template(pn_ssh_conn, pan_template_stack + "-tmp")
-        configure_template_stack(pn_ssh_conn, pan_template_stack)
+    info("Applying CN-Series License.")
 
-    info("Appling CN-Series License.")
-    activate_license(pn_ssh_conn, cn_auth_code, cn_tokens)
+    #activate_license(pn_ssh_conn, panorama_dict['cn_auth_code'], panorama_dict['cn_tokens'])
 
     info("Creating k8s service accout for Panorama Plugin.")
-    k8s_dict['svc_acocunt_b64'] = create_k8s_plugin_svc_account(k8s_ssh_conn, yaml_base_url)
+    #k8s_dict['svc_acocunt_b64'] = create_k8s_plugin_svc_account(k8s_ssh_conn, yaml_base_url)
     info("Configure Panorama Plugin")
-    configure_panorama(pn_ssh_conn, panorama_dict, k8s_dict)
+    #configure_panorama(pn_ssh_conn, panorama_dict, k8s_dict)
 
-    panorama_commit(pn_api_conn)
+    #panorama_commit(pn_api_conn)
 
-    # print(run_kubelet_cmd(k8s_ssh_conn, "kubectl get serviceaccount", "kube-system"))
+    info("Creating bootstrapping authentication key")
+    panorama_dict['auth_key'] = create_auth_key(pn_ssh_conn)
+
+    info("Deploying CN-Series")
+    create_cn_series(k8s_ssh_conn, yaml_base_url, cn_images_dict, panorama_dict)
+
     pn_ssh_conn.close()
     k8s_ssh_conn.close()
 

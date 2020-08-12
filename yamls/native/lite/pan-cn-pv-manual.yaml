@@ -9,7 +9,7 @@ metadata:
 spec:
   storageClassName: manual
   capacity:
-    storage: 20Gi
+    storage: 10Gi
   accessModes:
     - ReadWriteOnce
   # ReclaimPolicy: Recycle, supported for only hostpath and NFS volumes, ensures
@@ -21,25 +21,6 @@ spec:
 kind: PersistentVolume
 apiVersion: v1
 metadata:
-  name: auto-pv-vol2
-  labels:
-    type: local
-    pv: panlogs
-spec:
-  storageClassName: manual
-  capacity:
-    storage: 20Gi
-  accessModes:
-    - ReadWriteOnce
-  # ReclaimPolicy: Recycle, supported for only hostpath and NFS volumes, ensures
-  # data scrubbing for clean/fresh redeployment after PVC and PV deletion
-  persistentVolumeReclaimPolicy: Recycle
-  hostPath:
-    path: "/mnt/auto2"
----
-kind: PersistentVolume
-apiVersion: v1
-metadata:
   name: auto-pv-vol3
   labels:
     type: local
@@ -47,7 +28,7 @@ metadata:
 spec:
   storageClassName: manual
   capacity:
-    storage: 20Gi
+    storage: 10Gi
   accessModes:
     - ReadWriteOnce
   # ReclaimPolicy: Recycle, supported for only hostpath and NFS volumes, ensures
@@ -55,25 +36,6 @@ spec:
   persistentVolumeReclaimPolicy: Recycle
   hostPath:
     path: "/mnt/auto3"
----
-kind: PersistentVolume
-apiVersion: v1
-metadata:
-  name: auto-pv-vol4
-  labels:
-    type: local
-    pv: panvarlog
-spec:
-  storageClassName: manual
-  capacity:
-    storage: 20Gi
-  accessModes:
-    - ReadWriteOnce
-  # ReclaimPolicy: Recycle, supported for only hostpath and NFS volumes, ensures
-  # data scrubbing for clean/fresh redeployment after PVC and PV deletion
-  persistentVolumeReclaimPolicy: Recycle
-  hostPath:
-    path: "/mnt/auto4"
 ---
 kind: PersistentVolume
 apiVersion: v1
@@ -97,25 +59,6 @@ spec:
 kind: PersistentVolume
 apiVersion: v1
 metadata:
-  name: auto-pv-vol6
-  labels:
-    type: local
-    pv: panvarcores
-spec:
-  storageClassName: manual
-  capacity:
-    storage: 2Gi
-  accessModes:
-    - ReadWriteOnce
-  # ReclaimPolicy: Recycle, supported for only hostpath and NFS volumes, ensures
-  # data scrubbing for clean/fresh redeployment after PVC and PV deletion
-  persistentVolumeReclaimPolicy: Recycle
-  hostPath:
-    path: "/mnt/auto6"
----
-kind: PersistentVolume
-apiVersion: v1
-metadata:
   name: auto-pv-vol7
   labels:
     type: local
@@ -135,25 +78,6 @@ spec:
 kind: PersistentVolume
 apiVersion: v1
 metadata:
-  name: auto-pv-vol8
-  labels:
-    type: local
-    pv: panplugincfg
-spec:
-  storageClassName: manual
-  capacity:
-    storage: 1Gi
-  accessModes:
-    - ReadWriteOnce
-  # ReclaimPolicy: Recycle, supported for only hostpath and NFS volumes, ensures
-  # data scrubbing for clean/fresh redeployment after PVC and PV deletion
-  persistentVolumeReclaimPolicy: Recycle
-  hostPath:
-    path: "/mnt/auto8"
----
-kind: PersistentVolume
-apiVersion: v1
-metadata:
   name: auto-pv-vol9
   labels:
     type: local
@@ -161,7 +85,7 @@ metadata:
 spec:
   storageClassName: manual
   capacity:
-    storage: 8Gi
+    storage: 5Gi
   accessModes:
     - ReadWriteOnce
   # ReclaimPolicy: Recycle, supported for only hostpath and NFS volumes, ensures
@@ -169,25 +93,6 @@ spec:
   persistentVolumeReclaimPolicy: Recycle
   hostPath:
     path: "/mnt/auto9"
----
-kind: PersistentVolume
-apiVersion: v1
-metadata:
-  name: auto-pv-vol10
-  labels:
-    type: local
-    pv: panconfig
-spec:
-  storageClassName: manual
-  capacity:
-    storage: 8Gi
-  accessModes:
-    - ReadWriteOnce
-  # ReclaimPolicy: Recycle, supported for only hostpath and NFS volumes, ensures
-  # data scrubbing for clean/fresh redeployment after PVC and PV deletion
-  persistentVolumeReclaimPolicy: Recycle
-  hostPath:
-    path: "/mnt/auto10"
 ---
 kind: PersistentVolume
 apiVersion: v1
@@ -207,23 +112,3 @@ spec:
   persistentVolumeReclaimPolicy: Recycle
   hostPath:
     path: "/mnt/auto11"
----
-kind: PersistentVolume
-apiVersion: v1
-metadata:
-  name: auto-pv-vol12
-  labels:
-    type: local
-    pv: panplugins
-spec:
-  storageClassName: manual
-  capacity:
-    storage: 200Mi
-  accessModes:
-    - ReadWriteOnce
-  # ReclaimPolicy: Recycle, supported for only hostpath and NFS volumes, ensures
-  # data scrubbing for clean/fresh redeployment after PVC and PV deletion
-  persistentVolumeReclaimPolicy: Recycle
-  hostPath:
-    path: "/mnt/auto12"
-

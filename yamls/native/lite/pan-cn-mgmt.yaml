@@ -194,10 +194,10 @@ spec:
       # provided pan-cn-pv-manual.yaml as is).
       #storageClassName: manual
       #
-      # Enable this to use Local PVs, after deploying pan-local-storage 
+      # Enable this to use Local PVs, after deploying manual 
       # storageclass and PVs (refer provided pan-cn-pv-local.yaml) and 
       # after creating the mount point on the host nodes for local PVs .
-      storageClassName: pan-local-storage
+      storageClassName: manual
       selector:
         matchLabels:
             pv: panlogs
@@ -216,10 +216,10 @@ spec:
       # provided pan-cn-pv-manual.yaml as is).
       #storageClassName: manual
       #
-      # Enable this to use Local PVs, after deploying pan-local-storage 
+      # Enable this to use Local PVs, after deploying manual 
       # storageclass and PVs (refer provided pan-cn-pv-local.yaml) and 
       # after creating the mount point on the host nodes for local PVs .
-      storageClassName: pan-local-storage
+      storageClassName: manual
       selector:
         matchLabels:
             pv: panvarlog
@@ -238,10 +238,10 @@ spec:
       # provided pan-cn-pv-manual.yaml as is).
       #storageClassName: manual
       #
-      # Enable this to use Local PVs, after deploying pan-local-storage 
+      # Enable this to use Local PVs, after deploying manual 
       # storageclass and PVs (refer provided pan-cn-pv-local.yaml) and 
       # after creating the mount point on the host nodes for local PVs .
-      storageClassName: pan-local-storage
+      storageClassName: manual
       selector:
         matchLabels:
             pv: panvarcores
@@ -260,10 +260,10 @@ spec:
       # provided pan-cn-pv-manual.yaml as is).
       #storageClassName: manual
       #
-      # Enable this to use Local PVs, after deploying pan-local-storage 
+      # Enable this to use Local PVs, after deploying manual 
       # storageclass and PVs (refer provided pan-cn-pv-local.yaml) and 
       # after creating the mount point on the host nodes for local PVs .
-      storageClassName: pan-local-storage
+      storageClassName: manual
       selector:
         matchLabels:
             pv: panplugincfg
@@ -282,10 +282,10 @@ spec:
       # provided pan-cn-pv-manual.yaml as is).
       #storageClassName: manual
       #
-      # Enable this to use Local PVs, after deploying pan-local-storage 
+      # Enable this to use Local PVs, after deploying manual 
       # storageclass and PVs (refer provided pan-cn-pv-local.yaml) and 
       # after creating the mount point on the host nodes for local PVs .
-      storageClassName: pan-local-storage
+      storageClassName: manual
       selector:
         matchLabels:
             pv: panconfig
@@ -304,10 +304,10 @@ spec:
       # provided pan-cn-pv-manual.yaml as is).
       #storageClassName: manual
       #
-      # Enable this to use Local PVs, after deploying pan-local-storage 
+      # Enable this to use Local PVs, after deploying manual 
       # storageclass and PVs (refer provided pan-cn-pv-local.yaml) and 
       # after creating the mount point on the host nodes for local PVs .
-      storageClassName: pan-local-storage
+      storageClassName: manual
       selector:
         matchLabels:
             pv: panplugins

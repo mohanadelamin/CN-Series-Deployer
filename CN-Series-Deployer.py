@@ -707,7 +707,7 @@ def main():
         error("Sorry I don't support this type yet. only native or openshift is supported.")
         sys.exit()
 
-    if k8s_type == 'k8s':
+    if k8s_type == 'Native-Kubernetes':
         if k8s_mode == 'lite':
             yaml_base_url = K8S_BASE_URL + "lite/"
         else:

@@ -787,8 +787,8 @@ def main():
         info("Updating plugin list")
         update_plugin_list(pn_api_conn)
 
-        latest_k8s = find_latest_k8s_plugin(pn_api_conn)
         for p in range(3):
+            latest_k8s = find_latest_k8s_plugin(pn_api_conn)
             if latest_k8s['name']:
                 if latest_k8s['downloaded'] == 'no':
                     download_plugin(pn_ssh_conn, latest_k8s['name'])
@@ -798,6 +798,8 @@ def main():
                 if not wait_for_panos(pn_api_conn, time.time() + 60 * 5):
                     error("Download job taking more than expected, exiting...")
                     sys.exit()
+                # Give the download some time
+                time.sleep(10)
             else:
                 error("No Kubernetes plugin found. Check Panorama connection or install the plugin manually.")
                 sys.exit()
@@ -813,10 +815,14 @@ def main():
                     sys.exit()
                 info("Installation complete. I will check again if the plugin is installed properly.")
                 k8s_plugin_version = check_k8s_plugin(pn_api_conn)
+                # Give the install some time
+                time.sleep(10)
                 if k8s_plugin_version:
                     info("Kubernetes plugin version is {}".format(k8s_plugin_version.split('-')[1]))
                     break
-        time.sleep(10)
+            else:
+                info("Plugin is not installed, exiting.")
+                sys.exit()
 
     if commit_required:
         info("Committing configuration")
@@ -860,17 +866,17 @@ def main():
     panorama_commit(pn_api_conn)
 
     info("Deploying CN-Series")
-    if create_cn_series(k8s_ssh_conn, yaml_base_url, cn_images_dict, panorama_dict):
-        info("CN-Series is deployed successfully.")
-        info("Depending on the image download speed, it will take some time to pull images and finish deployment.")
-        info("")
-        info("=======================================================================================================")
-        info("")
-        info("I AM DONE! You can not monitor the CN-Series deployment using the following command from the k8s master")
-        info("")
-        info("kubectl get pods -n kube-system")
-        info("")
-        info("=======================================================================================================")
+    # if create_cn_series(k8s_ssh_conn, yaml_base_url, cn_images_dict, panorama_dict):
+    #     info("CN-Series is deployed successfully.")
+    #     info("Depending on the image download speed, it will take some time to pull images and finish deployment.")
+    #     info("")
+    #     info("=======================================================================================================")
+    #     info("")
+    #     info("I AM DONE! You can not monitor the CN-Series deployment using the following command from the k8s master")
+    #     info("")
+    #     info("kubectl get pods -n kube-system")
+    #     info("")
+    #     info("=======================================================================================================")
 
     pn_ssh_conn.close()
     k8s_ssh_conn.close()

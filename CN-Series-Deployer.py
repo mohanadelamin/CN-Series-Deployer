@@ -803,7 +803,7 @@ def main():
             else:
                 error("No Kubernetes plugin found. Check Panorama connection or install the plugin manually.")
                 sys.exit()
-            info("Seem like download was not successful. let me try again.")
+            info("Checking if plugin is downloaded properly.")
 
         for p in range(3):
             if latest_k8s['downloaded'] != 'no':
@@ -866,17 +866,17 @@ def main():
     panorama_commit(pn_api_conn)
 
     info("Deploying CN-Series")
-    # if create_cn_series(k8s_ssh_conn, yaml_base_url, cn_images_dict, panorama_dict):
-    #     info("CN-Series is deployed successfully.")
-    #     info("Depending on the image download speed, it will take some time to pull images and finish deployment.")
-    #     info("")
-    #     info("=======================================================================================================")
-    #     info("")
-    #     info("I AM DONE! You can not monitor the CN-Series deployment using the following command from the k8s master")
-    #     info("")
-    #     info("kubectl get pods -n kube-system")
-    #     info("")
-    #     info("=======================================================================================================")
+    if create_cn_series(k8s_ssh_conn, yaml_base_url, cn_images_dict, panorama_dict):
+        info("CN-Series is deployed successfully.")
+        info("Depending on the image download speed, it will take some time to pull images and finish deployment.")
+        info("")
+        info("=======================================================================================================")
+        info("")
+        info("I AM DONE! You can not monitor the CN-Series deployment using the following command from the k8s master")
+        info("")
+        info("kubectl get pods -n kube-system")
+        info("")
+        info("=======================================================================================================")
 
     pn_ssh_conn.close()
     k8s_ssh_conn.close()

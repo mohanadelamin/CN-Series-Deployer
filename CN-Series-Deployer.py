@@ -155,6 +155,7 @@ def create_panos_device(ip, username, password):
             ready = True
             break
     # Make sure PAN-OS is ready to accept commands. wait for 5 minutes
+    info("Checking if PAN-OS is ready to accept requests.")
     timeout = time.time() + 60 * 5
     if ready:
         if wait_for_panos(pn_api_conn, timeout):

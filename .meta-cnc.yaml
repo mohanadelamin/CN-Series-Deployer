@@ -26,44 +26,42 @@ labels:
 # to the python script
 variables:
   - name: pn_ip
-    description: Panorama IP Address
+    description: "Panorama IP Address"
     default: 192.168.55.5
     type_hint: text
   - name: pn_user
-    description: Panorama Username
+    description: "Panorama Username"
     default: admin
     type_hint: text
   - name: pn_pass
-    description: Panorama Password
+    description: "Panorama Password"
     default: ChangeMePlease
     type_hint: password
   - name: k8s_ip
-    description: Kubernetes cluster IP
+    description: "Kubernetes cluster IP"
     default: 192.168.55.144
     type_hint: text
   - name: k8s_user
-    description: Kubernetes cluster Username
+    description: "Kubernetes cluster Username"
     default: root
     type_hint: test
   - name: k8s_pass
-    description: Kubernetes cluster Password
+    description: "Kubernetes cluster Password"
     default: ChangeMePlease
     type_hint: password
   - name: k8s_type
-    description: Kubernetes cluster type. (Native or OpenShift)
+    description: "Kubernetes cluster type. (Native only for now, OpenShift coming soon)"
     default: native
     type_hint: dropdown
     dd_list:
       - key: Native
         value: native
-      - key: OpenShift
-        value: native
   - name: k8s_port
-    description: Kubernetes master API port
+    description: "Kubernetes master API port"
     default: 6443
     type_hint: text
   - name: k8s_mode
-    description: CN-Series deployment mode (Lite= single MP deployment for lab only. Full= Full CN-Series deployment)
+    description: "CN-Series deployment mode (Lite: single MP deployment for lab only. Full: Full CN-Series deployment)"
     default: lite
     type_hint: dropdown
     dd_list:
@@ -72,27 +70,27 @@ variables:
       - key: Full
         value: full
   - name: k8s_name
-    description: Kubernetes Cluster name
+    description: "Kubernetes Cluster name"
     default: CN-K8S-Cluster
     type_hint: text
   - name: pn_dg
-    description: Panorama Device Group (it will be created if not found)
+    description: "Panorama Device Group (it will be created if not found)"
     default: CN-DG
     type_hint: text
   - name: pn_tmpl
-    description: Panorama Template Stack (it will be created if not found)
+    description: "Panorama Template Stack (it will be created if not found)"
     default: CN-T-Stack
     type_hint: text
   - name: pn_cg
-    description: Panorama Log Collector Group (it will be created if not found)
+    description: "Panorama Log Collector Group (it will be created if not found)"
     default: CN-CG
     type_hint: text
   - name: auth_code
-    description: CN-Series license Auth Code
+    description: "CN-Series license Auth Code"
     default: ChangeMePlease
     type_hint: text
   - name: cn_bnd
-    description: CN-Series License bundle type ("CN-X-BASIC", "CN-X-BND1", "CN-X-BND2")
+    description: "CN-Series License bundle type (CN-X-BASIC, CN-X-BND1, or CN-X-BND2)"
     default: CN-X-BND2
     type_hint: dropdown
     dd_list:
@@ -103,30 +101,30 @@ variables:
       - key: CN-X-BND2
         value: CN-X-BND2
   - name: tokens
-    description: Number of CN-Series license token to activate.
+    description: "Number of CN-Series license token to activate."
     default: 1
     type_hint: text
   - name: cn_mgmt_image
-    description: CN-Series MP (CN-MGMT) Image registry path
+    description: "CN-Series MP (CN-MGMT) Image registry path"
     default: paloaltonetworks/panos_cn_mgmt
     type_hint: text
   - name: cn_init_image
-    description: CN-Series MP init Image registry path
+    description: "CN-Series MP init Image registry path"
     default: paloaltonetworks/pan_cn_mgmt_init
     type_hint: text
   - name: cn_ngfw_image
-    description: CN-Series DP (CN-NGFW) Image registry path
+    description: "CN-Series DP (CN-NGFW) Image registry path"
     default: paloaltonetworks/panos_cn_ngfw
     type_hint: text
   - name: cn_cni_image
-    description: CN-Series CNI Image registry path
+    description: "CN-Series CNI Image registry path"
     default: paloaltonetworks/pan_cni
     type_hint: text
   - name: cn_pin_id
-    description: CN-Series auto registration PIN ID for Thermite certificate retrieval
+    description: "CN-Series auto registration PIN ID for Thermite certificate retrieval"
     type_hint: text
   - name: cn_pin_value
-    description: CN-Series auto registration PIN ID for Thermite certificate retrieval
+    description: "CN-Series auto registration PIN ID for Thermite certificate retrieval"
     type_hint: text
 
 snippets:

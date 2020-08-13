@@ -9,7 +9,7 @@ metadata:
 spec:
   storageClassName: manual
   capacity:
-    storage: 10Gi
+    storage: 20Gi
   accessModes:
     - ReadWriteOnce
   # ReclaimPolicy: Recycle, supported for only hostpath and NFS volumes, ensures
@@ -28,7 +28,7 @@ metadata:
 spec:
   storageClassName: manual
   capacity:
-    storage: 10Gi
+    storage: 20Gi
   accessModes:
     - ReadWriteOnce
   # ReclaimPolicy: Recycle, supported for only hostpath and NFS volumes, ensures
@@ -85,7 +85,7 @@ metadata:
 spec:
   storageClassName: manual
   capacity:
-    storage: 5Gi
+    storage: 8Gi
   accessModes:
     - ReadWriteOnce
   # ReclaimPolicy: Recycle, supported for only hostpath and NFS volumes, ensures

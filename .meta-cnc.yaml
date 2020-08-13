@@ -18,6 +18,8 @@ extends:
 labels:
   collection:
     - Datacenter Virtualization
+    - Deploy
+    - CN-Series
 
 
 # Variables will be presented to the user via the Panhandler GUI. These values will then be passed to
@@ -61,7 +63,7 @@ variables:
     default: 6443
     type_hint: text
   - name: k8s_mode
-    description: CN-Series deployment mode (Lite= Small Footprint deployment for lab only. Full= Full CN-Series deployment)
+    description: CN-Series deployment mode (Lite= single MP deployment for lab only. Full= Full CN-Series deployment)
     default: lite
     type_hint: dropdown
     dd_list:

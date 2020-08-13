@@ -776,30 +776,33 @@ def main():
         sys.exit()
 
     commit_required = False
-    for p in range(5):
-        info("checking for Kubernetes plugin.")
-        k8s_plugin_version = check_k8s_plugin(pn_api_conn)
-        if k8s_plugin_version:
-            info("Kubernetes plugin version is {}".format(k8s_plugin_version.split('-')[1]))
-            break
-        else:
-            error("Kubernetes plugin is not installed, I will install the latest plugin")
-            info("Updating plugin list")
-            update_plugin_list(pn_api_conn)
 
-            latest_k8s = find_latest_k8s_plugin(pn_api_conn)
+    info("checking for Kubernetes plugin.")
+    k8s_plugin_version = check_k8s_plugin(pn_api_conn)
+    if k8s_plugin_version:
+        info("Kubernetes plugin version is {}".format(k8s_plugin_version.split('-')[1]))
+    else:
+        error("Kubernetes plugin is not installed, I will install the latest plugin")
+        info("Updating plugin list")
+        update_plugin_list(pn_api_conn)
+
+        latest_k8s = find_latest_k8s_plugin(pn_api_conn)
+        for p in range(3):
             if latest_k8s['name']:
                 if latest_k8s['downloaded'] == 'no':
                     download_plugin(pn_ssh_conn, latest_k8s['name'])
                 else:
                     info("Kubernetes plugin {} Downloaded.".format(latest_k8s['name']))
+                    break
                 if not wait_for_panos(pn_api_conn, time.time() + 60 * 5):
                     error("Download job taking more than expected, exiting...")
                     sys.exit()
             else:
                 error("No Kubernetes plugin found. Check Panorama connection or install the plugin manually.")
                 sys.exit()
+            info("Seem like download was not successful. let me try again.")
 
+        for p in range(3):
             if latest_k8s['downloaded'] != 'no':
                 info("Installing kubernetes plugin.")
                 install_k8s_plugin(pn_ssh_conn, latest_k8s['name'])
@@ -808,7 +811,11 @@ def main():
                     error("Download job taking more than expected, exiting...")
                     sys.exit()
                 info("Installation complete. I will check again if the plugin is installed properly.")
-            time.sleep(10)
+                k8s_plugin_version = check_k8s_plugin(pn_api_conn)
+                if k8s_plugin_version:
+                    info("Kubernetes plugin version is {}".format(k8s_plugin_version.split('-')[1]))
+                    break
+        time.sleep(10)
 
     if commit_required:
         info("Committing configuration")
@@ -824,8 +831,8 @@ def main():
     if check_template_stack(pn_api_conn, pan_template_stack):
         info("Template Stack {} Found.".format(pan_template_stack))
     else:
-        info("Template Stack {} was not found in Panorama. "
-             "I will add a Template and Template Stack to Panorama config.".format(pan_template_stack))
+        error("Template Stack {} was not found in Panorama. "
+              "I will add a Template and Template Stack to Panorama config.".format(pan_template_stack))
         configure_template(pn_ssh_conn, pan_template_stack + "-tmp")
         configure_template_stack(pn_ssh_conn, pan_template_stack)
 
@@ -855,6 +862,14 @@ def main():
     if create_cn_series(k8s_ssh_conn, yaml_base_url, cn_images_dict, panorama_dict):
         info("CN-Series is deployed successfully.")
         info("Depending on the image download speed, it will take some time to pull images and finish deployment.")
+        info("")
+        info("=======================================================================================================")
+        info("")
+        info("I AM DONE! You can not monitor the CN-Series deployment using the following command from the k8s master")
+        info("")
+        info("kubectl get pods -n kube-system")
+        info("")
+        info("=======================================================================================================")
 
     pn_ssh_conn.close()
     k8s_ssh_conn.close()

@@ -975,7 +975,7 @@ def main():
             info("")
             info("=======================================================================================================")
             info("")
-            info("I AM DONE! You can not monitor the CN-Series deployment using the following command from the k8s master")
+            info("I AM DONE! You can now monitor the CN-Series deployment using the following command from the k8s master")
             info("")
             info("kubectl get pods -n kube-system")
             info("")

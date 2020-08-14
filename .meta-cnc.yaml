@@ -126,11 +126,11 @@ variables:
     description: "CN-Series CNI Image registry path"
     default: paloaltonetworks/pan_cni
     type_hint: text
+  - name: cn_pin_value
+    description: "CN-Series auto registration PIN for Thermite certificate retrieval"
+    type_hint: text
   - name: cn_pin_id
     description: "CN-Series auto registration PIN ID for Thermite certificate retrieval"
-    type_hint: text
-  - name: cn_pin_value
-    description: "CN-Series auto registration PIN Value for Thermite certificate retrieval"
     type_hint: text
   - name: pv_type
     description: "CN-MGMT Persistent Volumes type: Manual, Local, or Dynamic. Ignore it for OpenShift"

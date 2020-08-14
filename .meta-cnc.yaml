@@ -50,19 +50,21 @@ variables:
     default: ChangeMePlease
     type_hint: password
   - name: k8s_type
-    description: "Kubernetes cluster type. (Native only for now, OpenShift coming soon)"
+    description: "Kubernetes cluster type."
     default: native
     type_hint: dropdown
     dd_list:
       - key: Native
         value: native
+      - key: OpenShift
+        value: openshift
   - name: k8s_port
     description: "Kubernetes master API port"
     default: 6443
     type_hint: text
   - name: k8s_mode
     description: "CN-Series deployment mode (Lite: single MP deployment for lab only. Full: Full CN-Series deployment)"
-    default: lite
+    default: Full
     type_hint: dropdown
     dd_list:
       - key: Lite

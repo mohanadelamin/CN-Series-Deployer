@@ -71,10 +71,10 @@ variables:
     default: Full
     type_hint: dropdown
     dd_list:
-      - key: Lite
-        value: lite
       - key: Full
         value: full
+      - key: Lite
+        value: lite
   - name: k8s_name
     description: "Kubernetes Cluster name"
     default: CN-K8S-Cluster

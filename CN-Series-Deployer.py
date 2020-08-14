@@ -546,6 +546,7 @@ def panorama_commit(pn_api_conn):
 def create_cn_series(k8s_ssh_conn, base_url, cn_images_dict, panorama_dict, k8s_dict):
     try:
         replicas = '1' if k8s_dict['k8s_mode'] == 'lite' else '2'
+
         ctl = k8s_dict['ctl']
         info("Creating CN-CNI account.")
         k8s_cmd = "curl -s -k {} | {} apply -f -".format(base_url + "pan-cni-serviceaccount.yaml", ctl)
@@ -629,6 +630,7 @@ def create_cn_series(k8s_ssh_conn, base_url, cn_images_dict, panorama_dict, k8s_
                 info(l)
 
             info("Creating CN-MGMT pods.")
+            info("Selected mode is {}. I will deploy {} replica(s)".format(k8s_dict['k8s_mode'], replicas))
             k8s_cmd = "curl -s -k {} " \
                       "| sed 's/replicas: .*$/replicas: {}/' " \
                       "| sed '0,/<your-private-registry-image-path>/s/<your-private-registry-image-path>/{}/' " \
@@ -650,6 +652,7 @@ def create_cn_series(k8s_ssh_conn, base_url, cn_images_dict, panorama_dict, k8s_
                 info(l)
 
             info("Creating CN-MGMT pods.")
+            info("Selected mode is {}. I will deploy {} replica(s)".format(k8s_dict['k8s_mode'], replicas))
             k8s_cmd = "curl -s -k {} " \
                       "| sed 's/replicas: .*$/replicas: {}/' " \
                       "| sed '0,/<your-private-registry-image-path>/s/<your-private-registry-image-path>/{}/' " \
@@ -665,6 +668,7 @@ def create_cn_series(k8s_ssh_conn, base_url, cn_images_dict, panorama_dict, k8s_
 
         else:
             info("Creating CN-MGMT pods.")
+            info("Selected mode is {}. I will deploy {} replica(s)".format(k8s_dict['k8s_mode'], replicas))
             k8s_cmd = "curl -s -k {} " \
                       "| sed 's/replicas: .*$/replicas: {}/' " \
                       "| sed '0,/<your-private-registry-image-path>/s/<your-private-registry-image-path>/{}/' " \
@@ -749,271 +753,274 @@ def main():
     """
     Command line program to configure and deploy CN-Series
     """
-    fmt_str = '%(asctime)s %(levelname)s: %(message)s'
-
-    logging_basicConfig(
-        format=fmt_str, level=logging_level_INFO,
-        stream=sys.stdout)
-
-    logging_getLogger("paramiko").setLevel(logging_level_WARN)
-
-    #
-    # The default signal handler for SIGINT / CTRL-C raises a KeyboardInterrupt
-    # exception which prints a possibly very long traceback. To avoid it we
-    # install a custom signal handler
-    #
-    signal_set_handler(signal_SIGINT, custom_signal_handler)
-
-    args = get_args()
-    # Panorama info:
-    pan_hostname = args.pn_ip
-    pan_username = args.pn_user
-    pan_password = args.pn_pass
-    pan_template_stack = args.pn_tmpl
-    pan_dg = args.pn_dg
-    pan_cg = args.pn_cg
-    cn_auth_code = args.auth_code
-    cn_tokens = args.tokens
-    cn_bundle = args.cn_bnd
-
-    # Kubernetes info:
-    k8s_ip = args.k8s_ip
-    ctl_ip = args.ctl_ip
-    k8s_username = args.k8s_user
-    k8s_password = args.k8s_pass
-    k8s_port = args.k8s_port
-    if args.k8s_mode == 'lite' or args.k8s_mode == 'full':
-        k8s_mode = args.k8s_mode
-    else:
-        error("Sorry I don't support this mode. Only lite or full are supported.")
-        sys.exit()
-    k8s_name = args.k8s_name
-    pv_type = args.pv_type
-
-    cn_pin_id = args.cn_pin_id
-    cn_pin_value = args.cn_pin_value
-
-    if not cn_pin_id or not cn_pin_value:
-        if k8s_mode == 'full':
-            error("You selected full mode. CN Series registration pin id and value is required.")
-            sys.exit()
-
-    if args.k8s_type == 'native':
-        k8s_type = 'Native-Kubernetes'
-    elif args.k8s_type == 'openshift':
-        k8s_type = 'OpenShift'
-        print("Sorry I only support native for now. OpenShift support comming soon.")
-        sys.exit()
-    else:
-        error("Sorry I don't support this type yet. only native or openshift is supported.")
-        sys.exit()
-
-    if k8s_type == 'Native-Kubernetes':
-        yaml_base_url = BASE_URL + "native/"
-    elif k8s_type == 'OpenShift':
-        yaml_base_url = BASE_URL + "openshift/"
-
-    ctl = 'kubectl' if k8s_type == 'Native-Kubernetes' else 'oc'
-
-    cn_images_dict = {
-        'cn_mgmt_image': args.cn_mgmt_image,
-        'cn_ngfw_image': args.cn_ngfw_image,
-        'cn_init_image': args.cn_init_image,
-        'cn_cni_image': args.cn_cni_image
-    }
-
-    panorama_dict = {
-        'pan_hostname': pan_hostname,
-        'pan_username': pan_username,
-        'pan_password': pan_password,
-        'device_group': pan_dg,
-        'template_stack': pan_template_stack,
-        'cn_auth_code': cn_auth_code,
-        'cn_tokens': cn_tokens,
-        'c_group': pan_cg,
-        'cn_bundle': cn_bundle,
-        'auth_key': ''
-    }
-
-    k8s_dict = {
-        'k8s_cluster_name': k8s_name,
-        'ctl_ip': ctl_ip,
-        'k8s_cluster_ip': k8s_ip,
-        'k8s_port': k8s_port,
-        'k8s_type': k8s_type,
-        'svc_acocunt_b64': '',
-        'yaml_base_url' : yaml_base_url,
-        'k8s_mode': k8s_mode,
-        'pv_type': pv_type,
-        'cn_pin_id': cn_pin_id,
-        'cn_pin_value': cn_pin_value,
-        'ctl': ctl
-    }
-
     try:
-        info("Establishing API connection with Panorama.")
-        pn_api_conn = create_panos_device(pan_hostname, pan_username, pan_password)
-        info("Establishing SSH connection with Panorama.")
-        pn_ssh_conn = ssh_login(pan_hostname, pan_username, pan_password)
-        info("Establishing SSH connection with k8s master.")
-        k8s_ssh_conn = ssh_login(ctl_ip, k8s_username, k8s_password)
-        if not (pn_api_conn and pn_ssh_conn and k8s_ssh_conn):
-            info("Without connection to both the kubernetes cluster and Panorama I can not work.")
+        fmt_str = '%(asctime)s %(levelname)s: %(message)s'
+
+        logging_basicConfig(
+            format=fmt_str, level=logging_level_INFO,
+            stream=sys.stdout)
+
+        logging_getLogger("paramiko").setLevel(logging_level_WARN)
+
+        #
+        # The default signal handler for SIGINT / CTRL-C raises a KeyboardInterrupt
+        # exception which prints a possibly very long traceback. To avoid it we
+        # install a custom signal handler
+        #
+        signal_set_handler(signal_SIGINT, custom_signal_handler)
+
+        args = get_args()
+        # Panorama info:
+        pan_hostname = args.pn_ip
+        pan_username = args.pn_user
+        pan_password = args.pn_pass
+        pan_template_stack = args.pn_tmpl
+        pan_dg = args.pn_dg
+        pan_cg = args.pn_cg
+        cn_auth_code = args.auth_code
+        cn_tokens = args.tokens
+        cn_bundle = args.cn_bnd
+
+        # Kubernetes info:
+        k8s_ip = args.k8s_ip
+        ctl_ip = args.ctl_ip
+        k8s_username = args.k8s_user
+        k8s_password = args.k8s_pass
+        k8s_port = args.k8s_port
+        if args.k8s_mode == 'lite' or args.k8s_mode == 'full':
+            k8s_mode = args.k8s_mode
+        else:
+            error("Sorry I don't support this mode. Only lite or full are supported.")
             sys.exit()
-    except:
-        error("Something went wrong which establishing connection, exiting...")
-        sys.exit()
+        k8s_name = args.k8s_name
+        pv_type = args.pv_type
 
-    panorama_version = check_panos_version(pn_api_conn)
+        cn_pin_id = args.cn_pin_id
+        cn_pin_value = args.cn_pin_value
 
-    if int(panorama_version.split('.')[0]) >= 10:
-        info("Panorama PAN-OS version is {}".format(panorama_version))
-    else:
-        error("Panorama PAN-OS version is {}. I need Panorama that running PAN-OS 10.0 or later, Exiting....".format(panorama_version))
-        sys.exit()
-
-    commit_required = False
-
-    info("checking for Kubernetes plugin.")
-    k8s_plugin_version = check_k8s_plugin(pn_api_conn)
-    if k8s_plugin_version:
-        info("Kubernetes plugin version is {}".format(k8s_plugin_version.split('-')[1]))
-    else:
-        error("Kubernetes plugin is not installed, I will install the latest plugin")
-        info("Updating plugin list")
-        update_plugin_list(pn_api_conn)
-
-        for p in range(3):
-            latest_k8s = find_latest_k8s_plugin(pn_api_conn)
-            if latest_k8s['name']:
-                if latest_k8s['downloaded'] == 'no':
-                    download_plugin(pn_ssh_conn, latest_k8s['name'])
-                else:
-                    info("Kubernetes plugin {} Downloaded.".format(latest_k8s['name']))
-                    break
-                if not wait_for_panos(pn_api_conn, time.time() + 60 * 5):
-                    error("Download job taking more than expected, exiting...")
-                    sys.exit()
-                # Give the download some time
-                time.sleep(10)
-            else:
-                error("No Kubernetes plugin found. Check Panorama connection or install the plugin manually.")
-                sys.exit()
-            info("Checking if plugin is downloaded properly.")
-
-        for p in range(3):
-            if latest_k8s['downloaded'] != 'no':
-                info("Installing kubernetes plugin.")
-                install_k8s_plugin(pn_ssh_conn, latest_k8s['name'])
-                commit_required = True
-                if not wait_for_panos(pn_api_conn, time.time() + 60 * 5):
-                    error("Download job taking more than expected, exiting...")
-                    sys.exit()
-                info("Installation complete. I will check again if the plugin is installed properly.")
-                # Give the install some time
-                time.sleep(10)
-                k8s_plugin_version = check_k8s_plugin(pn_api_conn)
-                if k8s_plugin_version:
-                    info("Kubernetes plugin version is {}".format(k8s_plugin_version.split('-')[1]))
-                    break
-                else:
-                    info("Plugin installation was not successful I will try again.")
-            else:
-                info("Plugin is not installed, exiting.")
+        if not cn_pin_id or not cn_pin_value:
+            if k8s_mode == 'full':
+                error("You selected full mode. CN Series registration pin id and value is required.")
                 sys.exit()
 
-    if commit_required:
-        info("Committing configuration")
+        if args.k8s_type == 'native':
+            k8s_type = 'Native-Kubernetes'
+        elif args.k8s_type == 'openshift':
+            k8s_type = 'OpenShift'
+            print("Sorry I only support native for now. OpenShift support comming soon.")
+            sys.exit()
+        else:
+            error("Sorry I don't support this type yet. only native or openshift is supported.")
+            sys.exit()
+
+        if k8s_type == 'Native-Kubernetes':
+            yaml_base_url = BASE_URL + "native/"
+        elif k8s_type == 'OpenShift':
+            yaml_base_url = BASE_URL + "openshift/"
+
+        ctl = 'kubectl' if k8s_type == 'Native-Kubernetes' else 'oc'
+
+        cn_images_dict = {
+            'cn_mgmt_image': args.cn_mgmt_image,
+            'cn_ngfw_image': args.cn_ngfw_image,
+            'cn_init_image': args.cn_init_image,
+            'cn_cni_image': args.cn_cni_image
+        }
+
+        panorama_dict = {
+            'pan_hostname': pan_hostname,
+            'pan_username': pan_username,
+            'pan_password': pan_password,
+            'device_group': pan_dg,
+            'template_stack': pan_template_stack,
+            'cn_auth_code': cn_auth_code,
+            'cn_tokens': cn_tokens,
+            'c_group': pan_cg,
+            'cn_bundle': cn_bundle,
+            'auth_key': ''
+        }
+
+        k8s_dict = {
+            'k8s_cluster_name': k8s_name,
+            'ctl_ip': ctl_ip,
+            'k8s_cluster_ip': k8s_ip,
+            'k8s_port': k8s_port,
+            'k8s_type': k8s_type,
+            'svc_acocunt_b64': '',
+            'yaml_base_url' : yaml_base_url,
+            'k8s_mode': k8s_mode,
+            'pv_type': pv_type,
+            'cn_pin_id': cn_pin_id,
+            'cn_pin_value': cn_pin_value,
+            'ctl': ctl
+        }
+
+        try:
+            info("Establishing API connection with Panorama.")
+            pn_api_conn = create_panos_device(pan_hostname, pan_username, pan_password)
+            info("Establishing SSH connection with Panorama.")
+            pn_ssh_conn = ssh_login(pan_hostname, pan_username, pan_password)
+            info("Establishing SSH connection with k8s master.")
+            k8s_ssh_conn = ssh_login(ctl_ip, k8s_username, k8s_password)
+            if not (pn_api_conn and pn_ssh_conn and k8s_ssh_conn):
+                info("Without connection to both the kubernetes cluster and Panorama I can not work.")
+                sys.exit()
+        except:
+            error("Something went wrong which establishing connection, exiting...")
+            sys.exit()
+
+        panorama_version = check_panos_version(pn_api_conn)
+
+        if int(panorama_version.split('.')[0]) >= 10:
+            info("Panorama PAN-OS version is {}".format(panorama_version))
+        else:
+            error("Panorama PAN-OS version is {}. I need Panorama that running PAN-OS 10.0 or later, Exiting....".format(panorama_version))
+            sys.exit()
+
+        commit_required = False
+
+        info("checking for Kubernetes plugin.")
+        k8s_plugin_version = check_k8s_plugin(pn_api_conn)
+        if k8s_plugin_version:
+            info("Kubernetes plugin version is {}".format(k8s_plugin_version.split('-')[1]))
+        else:
+            error("Kubernetes plugin is not installed, I will install the latest plugin")
+            info("Updating plugin list")
+            update_plugin_list(pn_api_conn)
+
+            for p in range(3):
+                latest_k8s = find_latest_k8s_plugin(pn_api_conn)
+                if latest_k8s['name']:
+                    if latest_k8s['downloaded'] == 'no':
+                        download_plugin(pn_ssh_conn, latest_k8s['name'])
+                    else:
+                        info("Kubernetes plugin {} Downloaded.".format(latest_k8s['name']))
+                        break
+                    if not wait_for_panos(pn_api_conn, time.time() + 60 * 5):
+                        error("Download job taking more than expected, exiting...")
+                        sys.exit()
+                    # Give the download some time
+                    time.sleep(10)
+                else:
+                    error("No Kubernetes plugin found. Check Panorama connection or install the plugin manually.")
+                    sys.exit()
+                info("Checking if plugin is downloaded properly.")
+
+            for p in range(3):
+                if latest_k8s['downloaded'] != 'no':
+                    info("Installing kubernetes plugin.")
+                    install_k8s_plugin(pn_ssh_conn, latest_k8s['name'])
+                    commit_required = True
+                    if not wait_for_panos(pn_api_conn, time.time() + 60 * 5):
+                        error("Download job taking more than expected, exiting...")
+                        sys.exit()
+                    info("Installation complete. I will check again if the plugin is installed properly.")
+                    # Give the install some time
+                    time.sleep(10)
+                    k8s_plugin_version = check_k8s_plugin(pn_api_conn)
+                    if k8s_plugin_version:
+                        info("Kubernetes plugin version is {}".format(k8s_plugin_version.split('-')[1]))
+                        break
+                    else:
+                        info("Plugin installation was not successful I will try again.")
+                else:
+                    info("Plugin is not installed, exiting.")
+                    sys.exit()
+
+        if commit_required:
+            info("Committing configuration")
+            panorama_commit(pn_api_conn)
+
+        if check_device_group(pn_api_conn, pan_dg):
+            info("Device group {} Found.".format(pan_dg))
+        else:
+            error("Device Group {} was not found in Panorama. "
+                  "I will add the device group to Panorama config.".format(pan_dg))
+            configure_device_group(pn_ssh_conn, pan_dg)
+
+        if check_template_stack(pn_api_conn, pan_template_stack):
+            info("Template Stack {} Found.".format(pan_template_stack))
+        else:
+            error("Template Stack {} was not found in Panorama. "
+                  "I will add a Template and Template Stack to Panorama config.".format(pan_template_stack))
+            configure_template(pn_ssh_conn, pan_template_stack + "-tmp")
+            configure_template_stack(pn_ssh_conn, pan_template_stack)
+
+        if check_collector_group(pn_api_conn, pan_cg):
+            info("Collector group {} found.".format(pan_cg))
+        else:
+            info("Collector group {} not found. "
+                 "I will add a dummy one you can add log collector to it later.".format(pan_cg))
+            configure_collector_group(pn_ssh_conn, pan_cg)
+
+        info("Applying CN-Series License.")
+
+        activate_license(pn_ssh_conn, panorama_dict['cn_auth_code'], panorama_dict['cn_tokens'])
+
+        info("Creating k8s service account for Panorama Plugin.")
+        k8s_dict['svc_acocunt_b64'] = create_k8s_plugin_svc_account(k8s_ssh_conn, yaml_base_url, ctl)
+        info("Configure Panorama Plugin")
+        configure_panorama(pn_ssh_conn, panorama_dict, k8s_dict)
+
+        info("Creating bootstrapping authentication key")
+        panorama_dict['auth_key'] = create_auth_key(pn_ssh_conn).strip()
+
+        # Committing changes to Panorama.
         panorama_commit(pn_api_conn)
 
-    if check_device_group(pn_api_conn, pan_dg):
-        info("Device group {} Found.".format(pan_dg))
-    else:
-        error("Device Group {} was not found in Panorama. "
-              "I will add the device group to Panorama config.".format(pan_dg))
-        configure_device_group(pn_ssh_conn, pan_dg)
+        info("Deploying CN-Series")
+        if create_cn_series(k8s_ssh_conn, yaml_base_url, cn_images_dict, panorama_dict, k8s_dict):
+            info("CN-Series is deployed successfully.")
+            info("Depending on the image download speed, it will take some time to pull images and finish deployment.")
+            info("")
+            info("=======================================================================================================")
+            info("")
+            info("I AM DONE! You can not monitor the CN-Series deployment using the following command from the k8s master")
+            info("")
+            info("kubectl get pods -n kube-system")
+            info("")
+            info("")
+            info("The script will keep checking for the pods status every 5 min. Installation will take about 15 min.")
+            info("You can exit now and monitor manually if you prefer")
+            info("=======================================================================================================")
+            info("")
+            info("")
 
-    if check_template_stack(pn_api_conn, pan_template_stack):
-        info("Template Stack {} Found.".format(pan_template_stack))
-    else:
-        error("Template Stack {} was not found in Panorama. "
-              "I will add a Template and Template Stack to Panorama config.".format(pan_template_stack))
-        configure_template(pn_ssh_conn, pan_template_stack + "-tmp")
-        configure_template_stack(pn_ssh_conn, pan_template_stack)
+        info("I will sleep for 5 min then I will start checking the pods status.")
+        time.sleep(300)
 
-    if check_collector_group(pn_api_conn, pan_cg):
-        info("Collector group {} found.".format(pan_cg))
-    else:
-        info("Collector group {} not found. "
-             "I will add a dummy one you can add log collector to it later.".format(pan_cg))
-        configure_collector_group(pn_ssh_conn, pan_cg)
+        success = False
+        for c_pod in range(5):
+            if check_pods_status(k8s_ssh_conn, ctl):
+                info("All pods are running. I will now check if all containers are ready.")
+                for c_c in range(5):
+                    if check_container_status(k8s_ssh_conn, ctl):
+                       info("All containers are ready.")
+                       success = True
+                       break
+                    else:
+                       info("Not all containers are ready. I will check again after 5 min.")
+                       time.sleep(300)
+                break
+            else:
+                info("Not all pods are running. I will check again after 5 min.")
+                time.sleep(300)
 
-    info("Applying CN-Series License.")
-
-    activate_license(pn_ssh_conn, panorama_dict['cn_auth_code'], panorama_dict['cn_tokens'])
-
-    info("Creating k8s service account for Panorama Plugin.")
-    k8s_dict['svc_acocunt_b64'] = create_k8s_plugin_svc_account(k8s_ssh_conn, yaml_base_url, ctl)
-    info("Configure Panorama Plugin")
-    configure_panorama(pn_ssh_conn, panorama_dict, k8s_dict)
-
-    info("Creating bootstrapping authentication key")
-    panorama_dict['auth_key'] = create_auth_key(pn_ssh_conn).strip()
-
-    # Committing changes to Panorama.
-    panorama_commit(pn_api_conn)
-
-    info("Deploying CN-Series")
-    if create_cn_series(k8s_ssh_conn, yaml_base_url, cn_images_dict, panorama_dict, k8s_dict):
-        info("CN-Series is deployed successfully.")
-        info("Depending on the image download speed, it will take some time to pull images and finish deployment.")
-        info("")
-        info("=======================================================================================================")
-        info("")
-        info("I AM DONE! You can not monitor the CN-Series deployment using the following command from the k8s master")
-        info("")
-        info("kubectl get pods -n kube-system")
-        info("")
-        info("")
-        info("The script will keep checking for the pods status every 5 min. Installation will take about 15 min.")
-        info("You can exit now and monitor manually if you prefer")
-        info("=======================================================================================================")
-        info("")
-        info("")
-
-    info("I will sleep for 5 min then I will start checking the pods status.")
-    time.sleep(300)
-
-    success = False
-    for c_pod in range(5):
-        if check_pods_status(k8s_ssh_conn, ctl):
-            info("All pods are running. I will now check if all containers are ready.")
-            for c_c in range(5):
-                if check_container_status(k8s_ssh_conn, ctl):
-                   info("All containers are ready.")
-                   success = True
-                   break
-                else:
-                   info("Not all containers are ready. I will check again after 5 min.")
-                   time.sleep(300)
-            break
+        if success:
+            info("*******************************************************************************************************")
+            info("")
+            info("")
+            info("Installation done successfully.")
+            info("")
+            info("")
+            info("*******************************************************************************************************")
         else:
-            info("Not all pods are running. I will check again after 5 min.")
-            time.sleep(300)
+            error("Seem like there is some errors during deployment. Please log in the k8s cluster and check the status.")
 
-    if success:
-        info("*******************************************************************************************************")
-        info("")
-        info("")
-        info("Installation done successfully.")
-        info("")
-        info("")
-        info("*******************************************************************************************************")
-    else:
-        error("Seem like there is some errors during deployment. Please log in the k8s cluster and check the status.")
-
-    pn_ssh_conn.close()
-    k8s_ssh_conn.close()
+        pn_ssh_conn.close()
+        k8s_ssh_conn.close()
+    except:
+        error("An error occurred that I couldn't handle!")
 
 
 # Start program

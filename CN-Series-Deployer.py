@@ -585,7 +585,7 @@ def create_cn_series(k8s_ssh_conn, base_url, cn_images_dict, panorama_dict, k8s_
                       "| sed 's/<PIN-Value>/{}/g' " \
                       "| {} apply -f -".format(base_url + "pan-cn-mgmt-secret.yaml",
                                                panorama_dict['auth_key'],
-                                               k8s_dict['cn_pin_ip'],
+                                               k8s_dict['cn_pin_id'],
                                                k8s_dict['cn_pin_value'],
                                                ctl)
             k8s_output = run_ssh_command(k8s_ssh_conn, k8s_cmd)

@@ -1,7 +1,43 @@
 ## CN-Series Deployer
-Python script to  deploy and Configure Palo Alto Networks CN-Series
+Python script to deploy Palo Alto Networks [CN-Series](https://docs.paloaltonetworks.com/pan-os/10-0/pan-os-new-features/virtualization-features/cn-series-firewalls-for-securing-kubernetes-deployments.html) in Kubernetes native or OpenShift cluster.
 
-Script is not complete yet.
+The script will do the following tasks:
+1. Check Panorama PAN-OS version and confirm its running version 10.0 or later.
+2. Check Panorama if kubernetes plugin is installed. If not, the script will download and install the latest kubernetes plugin.
+3. Check Panorama if the following is configured. If not, the script will add them to Panorama config.
+    - Device Group.
+    - Template Stack.
+    - Log Collector Group
+    
+4. Add a service account to K8S. The service account to be used by the Panorama Plugin.
+5. Configure Panorama plugin. And apply the license for the CN-Series.
+6- Deploy the following on the k8s cluster:
+    - Service accounts for CN-CNI and CN-MGMT.
+    - Config map for CN-CNI, CN-MGMT, and CN-NGFW.
+    - CN-CNI DaemonSet
+    - CN-MGMT StatefulSet
+    - CN-NGFW DaemonSet.
+
+## Prerequisites
+
+The best way to run this script is using [Panhandler](https://live.paloaltonetworks.com/t5/skillet-tools/install-and-get-started-with-panhandler/ta-p/307916).
+
+To run the script directly then you will need:
+1. Python3
+2. The following python modules (can be installed using: pip3 install -r requirements.txt)
+    - pandevice==0.10.0
+    - paramiko==2.7.1
+    - paramiko-expect==0.2.8
+
+## Usage
+
+1. Import the repo into your panhandler
+2. Run the skillet and fill the required fields and click submit (Make sure to add quotes if the value will contain space):
+3. Wait for the skillet to download the required Python modules (pandevice, paramiko, and paramiko-expect).
+4. Finally the skillet will deploy the CN-Series and configure Panorama.  
+
+
+Check the following video for example deployment:
 
 ## Support Policy ##
 

@@ -67,6 +67,8 @@ def get_args():
                         action='store', help='Panorama username')
     parser.add_argument('--pn_pass', required=True,
                         action='store', help='Panorama Password')
+    parser.add_argument('--ctl_ip', required=True,
+                        action='store', help='Kubectl or oc node IP address')
     parser.add_argument('--k8s_ip', required=True,
                         action='store', help='K8S master node IP address')
     parser.add_argument('--k8s_user', required=True,
@@ -462,15 +464,15 @@ def kubelet_apply(k8s_ssh_conn, cmd):
         return None
 
 
-def create_k8s_plugin_svc_account(k8s_ssh_conn, base_url):
+def create_k8s_plugin_svc_account(k8s_ssh_conn, base_url, ctl):
     try:
-        k8s_cmd = "curl -s -k {} | kubectl apply -f -".format(base_url + "plugin-serviceaccount.yaml")
+        k8s_cmd = "curl -s -k {} | {} apply -f -".format(base_url + "plugin-serviceaccount.yaml", ctl)
         k8s_output = run_ssh_command(k8s_ssh_conn, k8s_cmd)
         for l in k8s_output.rstrip().split('\n'):
             info(l)
-        svc_token_cmd = "kubectl get serviceaccount pan-plugin-user -n kube-system -o jsonpath='{.secrets[0].name}'"
+        svc_token_cmd = ctl + " get serviceaccount pan-plugin-user -n kube-system -o jsonpath='{.secrets[0].name}'"
         svc_token = run_ssh_command(k8s_ssh_conn, svc_token_cmd)
-        svc_account_json_cmd = "kubectl -n kube-system get secret {} -n kube-system -o json".format(svc_token.rstrip())
+        svc_account_json_cmd = "{} -n kube-system get secret {} -n kube-system -o json".format(ctl, svc_token.rstrip())
         svc_account_json = run_ssh_command(k8s_ssh_conn, svc_account_json_cmd)
         svc_account_b64 = base64.b64encode(svc_account_json.rstrip().encode()).decode()
         info("Plugin Service account base64 token generated.")
@@ -544,20 +546,21 @@ def panorama_commit(pn_api_conn):
 def create_cn_series(k8s_ssh_conn, base_url, cn_images_dict, panorama_dict, k8s_dict):
     try:
         replicas = '1' if k8s_dict['k8s_mode'] == 'lite' else '2'
+        ctl = k8s_dict['ctl']
         info("Creating CN-CNI account.")
-        k8s_cmd = "curl -s -k {} | kubectl apply -f -".format(base_url + "pan-cni-serviceaccount.yaml")
+        k8s_cmd = "curl -s -k {} | {} apply -f -".format(base_url + "pan-cni-serviceaccount.yaml", ctl)
         k8s_output = run_ssh_command(k8s_ssh_conn, k8s_cmd)
         for l in k8s_output.rstrip().split('\n'):
             info(l)
 
         info("Creating CN-MGMT service account.")
-        k8s_cmd = "curl -s -k {} | kubectl apply -f -".format(base_url + "pan-mgmt-serviceaccount.yaml")
+        k8s_cmd = "curl -s -k {} | {} apply -f -".format(base_url + "pan-mgmt-serviceaccount.yaml", ctl)
         k8s_output = run_ssh_command(k8s_ssh_conn, k8s_cmd)
         for l in k8s_output.rstrip().split('\n'):
             info(l)
 
         info("Creating CN-CNI config map.")
-        k8s_cmd = "curl -s -k {} | kubectl apply -f -".format(base_url + "pan-cni-configmap.yaml")
+        k8s_cmd = "curl -s -k {} | {} apply -f -".format(base_url + "pan-cni-configmap.yaml", ctl)
         k8s_output = run_ssh_command(k8s_ssh_conn, k8s_cmd)
         for l in k8s_output.rstrip().split('\n'):
             info(l)
@@ -566,8 +569,9 @@ def create_cn_series(k8s_ssh_conn, base_url, cn_images_dict, panorama_dict, k8s_
         k8s_cmd = "curl -s -k {} " \
                   "| sed 's/k8s-app/app/g'" \
                   "| sed 's/<your-private-registry-image-path>/{}/g' " \
-                  "| kubectl apply -f -".format(base_url + "pan-cni.yaml",
-                                                cn_images_dict['cn_cni_image'].replace('/','\/'))
+                  "| {} apply -f -".format(base_url + "pan-cni.yaml",
+                                           cn_images_dict['cn_cni_image'].replace('/','\/'),
+                                           ctl)
         k8s_output = run_ssh_command(k8s_ssh_conn, k8s_cmd)
         for l in k8s_output.rstrip().split('\n'):
             info(l)
@@ -578,10 +582,11 @@ def create_cn_series(k8s_ssh_conn, base_url, cn_images_dict, panorama_dict, k8s_
                       "| sed 's/<panorama-auth-key>/{}/g' " \
                       "| sed 's/<PIN Id>/{}/g' " \
                       "| sed 's/<PIN-Value>/{}/g' " \
-                      "| kubectl apply -f -".format(base_url + "pan-cn-mgmt-secret.yaml",
-                                                    panorama_dict['auth_key'],
-                                                    k8s_dict['cn_pin_ip'],
-                                                    k8s_dict['cn_pin_value'])
+                      "| {} apply -f -".format(base_url + "pan-cn-mgmt-secret.yaml",
+                                               panorama_dict['auth_key'],
+                                               k8s_dict['cn_pin_ip'],
+                                               k8s_dict['cn_pin_value'],
+                                               ctl)
             k8s_output = run_ssh_command(k8s_ssh_conn, k8s_cmd)
             for l in k8s_output.rstrip().split('\n'):
                 info(l)
@@ -591,7 +596,9 @@ def create_cn_series(k8s_ssh_conn, base_url, cn_images_dict, panorama_dict, k8s_
             k8s_cmd = "curl -s -k {} " \
                       "| sed 's/<panorama-auth-key>/{}/g' " \
                       "| sed '/.*CN-SERIES-AUTO-REGISTRATION-PIN.*/s/^/#/g' " \
-                      "| kubectl apply -f -".format(base_url + "pan-cn-mgmt-secret.yaml", panorama_dict['auth_key'])
+                      "| {} apply -f -".format(base_url + "pan-cn-mgmt-secret.yaml",
+                                               panorama_dict['auth_key'],
+                                               ctl)
             k8s_output = run_ssh_command(k8s_ssh_conn, k8s_cmd)
             for l in k8s_output.rstrip().split('\n'):
                 info(l)
@@ -603,19 +610,20 @@ def create_cn_series(k8s_ssh_conn, base_url, cn_images_dict, panorama_dict, k8s_
                   "| sed 's/<panorama-template-stack>/{}/g' " \
                   "| sed 's/<panorama-collector-group>/{}/g' " \
                   "| sed 's/<license-bundle-type>/{}/g' " \
-                  "| kubectl apply -f -".format(base_url + "pan-cn-mgmt-configmap.yaml",
-                                                panorama_dict['pan_hostname'],
-                                                panorama_dict['device_group'],
-                                                panorama_dict['template_stack'],
-                                                panorama_dict['c_group'],
-                                                panorama_dict['cn_bundle'])
+                  "| {} apply -f -".format(base_url + "pan-cn-mgmt-configmap.yaml",
+                                           panorama_dict['pan_hostname'],
+                                           panorama_dict['device_group'],
+                                           panorama_dict['template_stack'],
+                                           panorama_dict['c_group'],
+                                           panorama_dict['cn_bundle'],
+                                           ctl)
         k8s_output = run_ssh_command(k8s_ssh_conn, k8s_cmd)
         for l in k8s_output.rstrip().split('\n'):
             info(l)
 
         info("Creating manual PVs for CN-MGMT Pods")
         if k8s_dict['pv_type'] == "manual":
-            k8s_cmd = "curl -s -k {} | kubectl apply -f -".format(base_url + "pan-cn-pv-manual.yaml")
+            k8s_cmd = "curl -s -k {} | {} apply -f -".format(base_url + "pan-cn-pv-manual.yaml", ctl)
             k8s_output = run_ssh_command(k8s_ssh_conn, k8s_cmd)
             for l in k8s_output.rstrip().split('\n'):
                 info(l)
@@ -626,16 +634,17 @@ def create_cn_series(k8s_ssh_conn, base_url, cn_images_dict, panorama_dict, k8s_
                       "| sed '0,/<your-private-registry-image-path>/s/<your-private-registry-image-path>/{}/' " \
                       "| sed '0,/<your-private-registry-image-path>/s/<your-private-registry-image-path>/{}/' " \
                       "| sed 's/pan-local-storage/manual/g' " \
-                      "| kubectl apply -f -".format(base_url + "pan-cn-mgmt.yaml",
-                                                    replicas,
-                                                    cn_images_dict['cn_init_image'].replace('/','\/'),
-                                                    cn_images_dict['cn_mgmt_image'].replace('/','\/'))
+                      "| {} apply -f -".format(base_url + "pan-cn-mgmt.yaml",
+                                               replicas,
+                                               cn_images_dict['cn_init_image'].replace('/','\/'),
+                                               cn_images_dict['cn_mgmt_image'].replace('/','\/'),
+                                               ctl)
             k8s_output = run_ssh_command(k8s_ssh_conn, k8s_cmd)
             for l in k8s_output.rstrip().split('\n'):
                 info(l)
 
         elif k8s_dict['pv_type'] == "local":
-            k8s_cmd = "curl -s -k {} | kubectl apply -f -".format(base_url + "pan-cn-pv-local.yaml")
+            k8s_cmd = "curl -s -k {} | {} apply -f -".format(base_url + "pan-cn-pv-local.yaml", ctl)
             k8s_output = run_ssh_command(k8s_ssh_conn, k8s_cmd)
             for l in k8s_output.rstrip().split('\n'):
                 info(l)
@@ -645,10 +654,11 @@ def create_cn_series(k8s_ssh_conn, base_url, cn_images_dict, panorama_dict, k8s_
                       "| sed 's/replicas: .*$/replicas: {}/' " \
                       "| sed '0,/<your-private-registry-image-path>/s/<your-private-registry-image-path>/{}/' " \
                       "| sed '0,/<your-private-registry-image-path>/s/<your-private-registry-image-path>/{}/' " \
-                      "| kubectl apply -f -".format(base_url + "pan-cn-mgmt.yaml",
-                                                    replicas,
-                                                    cn_images_dict['cn_init_image'].replace('/','\/'),
-                                                    cn_images_dict['cn_mgmt_image'].replace('/','\/'))
+                      "| {} apply -f -".format(base_url + "pan-cn-mgmt.yaml",
+                                               replicas,
+                                               cn_images_dict['cn_init_image'].replace('/','\/'),
+                                               cn_images_dict['cn_mgmt_image'].replace('/','\/'),
+                                               ctl)
             k8s_output = run_ssh_command(k8s_ssh_conn, k8s_cmd)
             for l in k8s_output.rstrip().split('\n'):
                 info(l)
@@ -660,16 +670,17 @@ def create_cn_series(k8s_ssh_conn, base_url, cn_images_dict, panorama_dict, k8s_
                       "| sed '0,/<your-private-registry-image-path>/s/<your-private-registry-image-path>/{}/' " \
                       "| sed '0,/<your-private-registry-image-path>/s/<your-private-registry-image-path>/{}/' " \
                       "| sed 's/storageClassName/#storageClassName/g' " \
-                      "| kubectl apply -f -".format(base_url + "pan-cn-mgmt.yaml",
-                                                    replicas,
-                                                    cn_images_dict['cn_init_image'].replace('/', '\/'),
-                                                    cn_images_dict['cn_mgmt_image'].replace('/', '\/'))
+                      "| {} apply -f -".format(base_url + "pan-cn-mgmt.yaml",
+                                               replicas,
+                                               cn_images_dict['cn_init_image'].replace('/', '\/'),
+                                               cn_images_dict['cn_mgmt_image'].replace('/', '\/'),
+                                               ctl)
             k8s_output = run_ssh_command(k8s_ssh_conn, k8s_cmd)
             for l in k8s_output.rstrip().split('\n'):
                 info(l)
 
         info("Creating CN-NGFW config map.")
-        k8s_cmd = "curl -s -k {} | kubectl apply -f -".format(base_url + "pan-cn-ngfw-configmap.yaml")
+        k8s_cmd = "curl -s -k {} | {} apply -f -".format(base_url + "pan-cn-ngfw-configmap.yaml", ctl)
         k8s_output = run_ssh_command(k8s_ssh_conn, k8s_cmd)
         for l in k8s_output.rstrip().split('\n'):
             info(l)
@@ -677,8 +688,8 @@ def create_cn_series(k8s_ssh_conn, base_url, cn_images_dict, panorama_dict, k8s_
         info("Creating CN-NGFW pods.")
         k8s_cmd = "curl -s -k {} " \
                   "| sed 's/<your-private-registry-image-path>/{}/g' " \
-                  "| kubectl apply -f -".format(base_url + "pan-cn-ngfw.yaml",
-                                                cn_images_dict['cn_ngfw_image'].replace('/','\/'))
+                  "| {} apply -f -".format(base_url + "pan-cn-ngfw.yaml",
+                                                cn_images_dict['cn_ngfw_image'].replace('/','\/'), ctl)
         k8s_output = run_ssh_command(k8s_ssh_conn, k8s_cmd)
         for l in k8s_output.rstrip().split('\n'):
             info(l)
@@ -689,11 +700,11 @@ def create_cn_series(k8s_ssh_conn, base_url, cn_images_dict, panorama_dict, k8s_
         sys.exit()
 
 
-def check_pods_status(k8s_ssh_conn):
+def check_pods_status(k8s_ssh_conn, ctl):
     all_running = True
     info("Checking if pods are running.")
-    k8s_cmd = "kubectl get pods -n kube-system -l 'app in ( pan-mgmt, pan-ngfw, pan-cni)' " \
-              "-o jsonpath='{range .items[*]}{@.metadata.name}{\"=\"}{@.status.phase}{\",\"}{end}'"
+    k8s_cmd = ctl + " get pods -n kube-system -l 'app in ( pan-mgmt, pan-ngfw, pan-cni)' " \
+                    "-o jsonpath='{range .items[*]}{@.metadata.name}{\"=\"}{@.status.phase}{\",\"}{end}'"
     k8s_output = run_ssh_command(k8s_ssh_conn, k8s_cmd)
     for l in k8s_output.rstrip().split(',')[:-1]:
         info("Pod: {: <20} status is {}".format(l.split('=')[0], l.split('=')[1]))
@@ -702,17 +713,17 @@ def check_pods_status(k8s_ssh_conn):
     return all_running
 
 
-def check_container_status(k8s_ssh_conn):
+def check_container_status(k8s_ssh_conn, ctl):
     all_ready = True
     info("Checking if containers are ready.")
-    k8s_cmd = "kubectl get pods -n kube-system -l 'app in ( pan-mgmt, pan-ngfw, pan-cni)' " \
-              "-o jsonpath='{range .items[*]}{@.metadata.name}" \
-              "{\"=\"}{@.status.initContainerStatuses[*].name}" \
-              "{\"=\"}{@.status.initContainerStatuses[*].ready}" \
-              "{\",\"}{@.metadata.name}{\"=\"}" \
-              "{@.status.containerStatuses[*].name}" \
-              "{\"=\"}{@.status.containerStatuses[*].ready}" \
-              "{\",\"}{end}'"
+    k8s_cmd = ctl + " get pods -n kube-system -l 'app in ( pan-mgmt, pan-ngfw, pan-cni)' " \
+                    "-o jsonpath='{range .items[*]}{@.metadata.name}" \
+                    "{\"=\"}{@.status.initContainerStatuses[*].name}" \
+                    "{\"=\"}{@.status.initContainerStatuses[*].ready}" \
+                    "{\",\"}{@.metadata.name}{\"=\"}" \
+                    "{@.status.containerStatuses[*].name}" \
+                    "{\"=\"}{@.status.containerStatuses[*].ready}" \
+                    "{\",\"}{end}'"
     k8s_output = run_ssh_command(k8s_ssh_conn, k8s_cmd)
     for l in k8s_output.rstrip().split(',')[:-1]:
         if l.split('=')[1] == '':
@@ -767,6 +778,7 @@ def main():
 
     # Kubernetes info:
     k8s_ip = args.k8s_ip
+    ctl_ip = args.ctl_ip
     k8s_username = args.k8s_user
     k8s_password = args.k8s_pass
     k8s_port = args.k8s_port
@@ -789,9 +801,9 @@ def main():
     if args.k8s_type == 'native':
         k8s_type = 'Native-Kubernetes'
     elif args.k8s_type == 'openshift':
+        k8s_type = 'OpenShift'
         print("Sorry I only support native for now. OpenShift support comming soon.")
         sys.exit()
-        k8s_type = 'OpenShift'
     else:
         error("Sorry I don't support this type yet. only native or openshift is supported.")
         sys.exit()
@@ -800,6 +812,8 @@ def main():
         yaml_base_url = BASE_URL + "native/"
     elif k8s_type == 'OpenShift':
         yaml_base_url = BASE_URL + "openshift/"
+
+    ctl = 'kubectl' if k8s_type == 'Native-Kubernetes' else 'oc'
 
     cn_images_dict = {
         'cn_mgmt_image': args.cn_mgmt_image,
@@ -823,6 +837,7 @@ def main():
 
     k8s_dict = {
         'k8s_cluster_name': k8s_name,
+        'ctl_ip': ctl_ip,
         'k8s_cluster_ip': k8s_ip,
         'k8s_port': k8s_port,
         'k8s_type': k8s_type,
@@ -831,7 +846,8 @@ def main():
         'k8s_mode': k8s_mode,
         'pv_type': pv_type,
         'cn_pin_id': cn_pin_id,
-        'cn_pin_value': cn_pin_value
+        'cn_pin_value': cn_pin_value,
+        'ctl': ctl
     }
 
     try:
@@ -840,7 +856,7 @@ def main():
         info("Establishing SSH connection with Panorama.")
         pn_ssh_conn = ssh_login(pan_hostname, pan_username, pan_password)
         info("Establishing SSH connection with k8s master.")
-        k8s_ssh_conn = ssh_login(k8s_ip, k8s_username, k8s_password)
+        k8s_ssh_conn = ssh_login(ctl_ip, k8s_username, k8s_password)
         if not (pn_api_conn and pn_ssh_conn and k8s_ssh_conn):
             info("Without connection to both the kubernetes cluster and Panorama I can not work.")
             sys.exit()
@@ -937,7 +953,7 @@ def main():
     activate_license(pn_ssh_conn, panorama_dict['cn_auth_code'], panorama_dict['cn_tokens'])
 
     info("Creating k8s service account for Panorama Plugin.")
-    k8s_dict['svc_acocunt_b64'] = create_k8s_plugin_svc_account(k8s_ssh_conn, yaml_base_url)
+    k8s_dict['svc_acocunt_b64'] = create_k8s_plugin_svc_account(k8s_ssh_conn, yaml_base_url, ctl)
     info("Configure Panorama Plugin")
     configure_panorama(pn_ssh_conn, panorama_dict, k8s_dict)
 
@@ -970,14 +986,14 @@ def main():
 
     success = False
     for c_pod in range(5):
-        if check_pods_status(k8s_ssh_conn):
+        if check_pods_status(k8s_ssh_conn, ctl):
             info("All pods are running. I will now check if all containers are ready.")
             for c_c in range(5):
-               if check_container_status(k8s_ssh_conn):
-                    info("All containers are ready.")
-                    success = True
-                    break
-               else:
+                if check_container_status(k8s_ssh_conn, ctl):
+                   info("All containers are ready.")
+                   success = True
+                   break
+                else:
                    info("Not all containers are ready. I will check again after 5 min.")
                    time.sleep(300)
             break

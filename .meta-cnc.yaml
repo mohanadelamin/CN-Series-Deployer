@@ -38,17 +38,9 @@ variables:
     default: ChangeMePlease
     type_hint: password
   - name: k8s_ip
-    description: "Kubernetes cluster IP"
+    description: "Kubernetes cluster master IP"
     default: 192.168.55.144
     type_hint: text
-  - name: k8s_user
-    description: "Kubernetes cluster Username"
-    default: root
-    type_hint: test
-  - name: k8s_pass
-    description: "Kubernetes cluster Password"
-    default: ChangeMePlease
-    type_hint: password
   - name: k8s_type
     description: "Kubernetes cluster type."
     default: native
@@ -58,6 +50,18 @@ variables:
         value: native
       - key: OpenShift
         value: openshift
+  - name: ctl_ip
+    description: "Kubectl node IP address. (Linux machine that can run kubectl or oc against the k8s master.)"
+    default: 192.168.55.144
+    type_hint: text
+  - name: k8s_user
+    description: "Kubectl node Username"
+    default: root
+    type_hint: test
+  - name: k8s_pass
+    description: "Kubectl node Password"
+    default: ChangeMePlease
+    type_hint: password
   - name: k8s_port
     description: "Kubernetes master API port"
     default: 6443
@@ -128,6 +132,16 @@ variables:
   - name: cn_pin_value
     description: "CN-Series auto registration PIN ID for Thermite certificate retrieval"
     type_hint: text
+  - name: pv_type
+    description: "CN-MGMT Persistent Volumes type: Manual, Local, or Dynamic. Ignore it for OpenShift"
+    type_hint: dropdown
+    dd_list:
+      - key: Manual
+        value: manual
+      - key: Local
+        value: local
+      - key: Dynamic
+        value: dynamic
 
 snippets:
   - name: script

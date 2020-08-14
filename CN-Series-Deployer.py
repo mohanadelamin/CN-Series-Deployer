@@ -990,10 +990,10 @@ def main():
         time.sleep(300)
 
         success = False
-        for c_pod in range(5):
+        for c_pod in range(6):
             if check_pods_status(k8s_ssh_conn, ctl):
                 info("All pods are running. I will now check if all containers are ready.")
-                for c_c in range(5):
+                for c_c in range(6):
                     if check_container_status(k8s_ssh_conn, ctl):
                        info("All containers are ready.")
                        success = True

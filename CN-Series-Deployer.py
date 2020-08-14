@@ -319,7 +319,7 @@ def create_auth_key(pn_ssh_conn):
         for l in auth_key_output.split('\n'):
             if 'generated' in l:
                 auth_key = re.findall(r"\d{15,}", l)[0]
-                return auth_key
+                return auth_key.strip()
     except:
         error("I couldn't create bootstrapping auth key")
         sys.exit()
@@ -963,7 +963,7 @@ def main():
         configure_panorama(pn_ssh_conn, panorama_dict, k8s_dict)
 
         info("Creating bootstrapping authentication key")
-        panorama_dict['auth_key'] = create_auth_key(pn_ssh_conn).strip()
+        panorama_dict['auth_key'] = create_auth_key(pn_ssh_conn)
 
         # Committing changes to Panorama.
         panorama_commit(pn_api_conn)

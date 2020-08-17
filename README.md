@@ -1,5 +1,5 @@
 ## CN-Series Deployer
-Python script to deploy Palo Alto Networks [CN-Series](https://docs.paloaltonetworks.com/pan-os/10-0/pan-os-new-features/virtualization-features/cn-series-firewalls-for-securing-kubernetes-deployments.html) in Kubernetes native or OpenShift cluster.
+Python script to deploy Palo Alto Networks [CN-Series](https://docs.paloaltonetworks.com/pan-os/10-0/pan-os-new-features/virtualization-features/cn-series-firewalls-for-securing-kubernetes-deployments.html) in Kubernetes native ( **Openshift support to be added soon** ).
 
 The script will do the following tasks:
 1. Check Panorama PAN-OS version and confirm its running version 10.0 or later.
@@ -37,7 +37,12 @@ To run the script directly then you will need:
 4. Finally the skillet will deploy the CN-Series and configure Panorama.  
 
 
+**Note: At the moment the script will need to run the kubectl commands from another host, that host can either be the master node it self or another linux machine with kubectl or oc installed on it. In future versions the script will use kubernetes API directly.**
+
+
 Check the following video for example deployment:
+
+[![Demo](https://img.youtube.com/vi/gX2NhC4kpwM/hqdefault.jpg)](https://youtu.be/gX2NhC4kpwM)
 
 ## Support Policy ##
 

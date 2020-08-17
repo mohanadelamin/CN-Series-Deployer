@@ -50,7 +50,6 @@ Check the following video for example deployment:
 To test the CN-Series you can use the following example [app](https://github.com/mohanadelamin/yelb):
 ```
 $ kubectl create namespace yelb
-$ kubectl create namespace yelb
 $ kubectl annotate namespace yelb paloaltonetworks.com/firewall=pan-fw
 $ curl -s -k https://raw.githubusercontent.com/mohanadelamin/yelb/master/yelb.yaml | kubectl apply -f -
 ```

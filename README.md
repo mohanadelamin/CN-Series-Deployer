@@ -40,6 +40,15 @@ To run the script directly then you will need:
 **Note: At the moment the script will need to run the kubectl commands from another host, that host can either be the master node it self or another linux machine with kubectl or oc installed on it. In future versions the script will use kubernetes API directly.**
 
 
+To test the CN-Series you can use the following example [app](https://github.com/mohanadelamin/yelb):
+```
+$ kubectl create namespace yelb
+$ kubectl create namespace yelb
+$ kubectl annotate namespace yelb paloaltonetworks.com/firewall=pan-fw
+$ curl -s -k https://raw.githubusercontent.com/mohanadelamin/yelb/master/yelb.yaml | kubectl apply -f -
+```
+
+
 Check the following video for example deployment:
 
 [![Demo](https://img.youtube.com/vi/gX2NhC4kpwM/hqdefault.jpg)](https://youtu.be/gX2NhC4kpwM)

@@ -622,49 +622,68 @@ def create_cn_series(k8s_ssh_conn, base_url, cn_images_dict, panorama_dict, k8s_
         for l in k8s_output.rstrip().split('\n'):
             info(l)
 
-        info("Creating manual PVs for CN-MGMT Pods")
-        if k8s_dict['pv_type'] == "manual":
-            k8s_cmd = "curl -s -k {} | {} apply -f -".format(base_url + "pan-cn-pv-manual.yaml", ctl)
-            k8s_output = run_ssh_command(k8s_ssh_conn, k8s_cmd)
-            for l in k8s_output.rstrip().split('\n'):
-                info(l)
+        if k8s_dict['k8s_type'] == 'Native-Kubernetes':
+            if k8s_dict['pv_type'] == "manual":
+                info("Creating manual PVs for CN-MGMT Pods")
+                k8s_cmd = "curl -s -k {} | {} apply -f -".format(base_url + "pan-cn-pv-manual.yaml", ctl)
+                k8s_output = run_ssh_command(k8s_ssh_conn, k8s_cmd)
+                for l in k8s_output.rstrip().split('\n'):
+                    info(l)
 
-            info("Creating CN-MGMT pods.")
-            info("Selected mode is {}. I will deploy {} replica(s)".format(k8s_dict['k8s_mode'], replicas))
-            k8s_cmd = "curl -s -k {} " \
-                      "| sed 's/replicas: .*$/replicas: {}/' " \
-                      "| sed '0,/<your-private-registry-image-path>/s/<your-private-registry-image-path>/{}/' " \
-                      "| sed '0,/<your-private-registry-image-path>/s/<your-private-registry-image-path>/{}/' " \
-                      "| sed 's/pan-local-storage/manual/g' " \
-                      "| {} apply -f -".format(base_url + "pan-cn-mgmt.yaml",
-                                               replicas,
-                                               cn_images_dict['cn_init_image'].replace('/','\/'),
-                                               cn_images_dict['cn_mgmt_image'].replace('/','\/'),
-                                               ctl)
-            k8s_output = run_ssh_command(k8s_ssh_conn, k8s_cmd)
-            for l in k8s_output.rstrip().split('\n'):
-                info(l)
+                info("Creating CN-MGMT pods.")
+                info("Selected mode is {}. I will deploy {} replica(s)".format(k8s_dict['k8s_mode'], replicas))
+                k8s_cmd = "curl -s -k {} " \
+                          "| sed 's/replicas: .*$/replicas: {}/' " \
+                          "| sed '0,/<your-private-registry-image-path>/s/<your-private-registry-image-path>/{}/' " \
+                          "| sed '0,/<your-private-registry-image-path>/s/<your-private-registry-image-path>/{}/' " \
+                          "| sed 's/pan-local-storage/manual/g' " \
+                          "| {} apply -f -".format(base_url + "pan-cn-mgmt.yaml",
+                                                   replicas,
+                                                   cn_images_dict['cn_init_image'].replace('/','\/'),
+                                                   cn_images_dict['cn_mgmt_image'].replace('/','\/'),
+                                                   ctl)
+                k8s_output = run_ssh_command(k8s_ssh_conn, k8s_cmd)
+                for l in k8s_output.rstrip().split('\n'):
+                    info(l)
 
-        elif k8s_dict['pv_type'] == "local":
-            k8s_cmd = "curl -s -k {} | {} apply -f -".format(base_url + "pan-cn-pv-local.yaml", ctl)
-            k8s_output = run_ssh_command(k8s_ssh_conn, k8s_cmd)
-            for l in k8s_output.rstrip().split('\n'):
-                info(l)
+            elif k8s_dict['pv_type'] == "local":
+                info("Creating local PVs for CN-MGMT Pods")
+                k8s_cmd = "curl -s -k {} | {} apply -f -".format(base_url + "pan-cn-pv-local.yaml", ctl)
+                k8s_output = run_ssh_command(k8s_ssh_conn, k8s_cmd)
+                for l in k8s_output.rstrip().split('\n'):
+                    info(l)
 
-            info("Creating CN-MGMT pods.")
-            info("Selected mode is {}. I will deploy {} replica(s)".format(k8s_dict['k8s_mode'], replicas))
-            k8s_cmd = "curl -s -k {} " \
-                      "| sed 's/replicas: .*$/replicas: {}/' " \
-                      "| sed '0,/<your-private-registry-image-path>/s/<your-private-registry-image-path>/{}/' " \
-                      "| sed '0,/<your-private-registry-image-path>/s/<your-private-registry-image-path>/{}/' " \
-                      "| {} apply -f -".format(base_url + "pan-cn-mgmt.yaml",
-                                               replicas,
-                                               cn_images_dict['cn_init_image'].replace('/','\/'),
-                                               cn_images_dict['cn_mgmt_image'].replace('/','\/'),
-                                               ctl)
-            k8s_output = run_ssh_command(k8s_ssh_conn, k8s_cmd)
-            for l in k8s_output.rstrip().split('\n'):
-                info(l)
+                info("Creating CN-MGMT pods.")
+                info("Selected mode is {}. I will deploy {} replica(s)".format(k8s_dict['k8s_mode'], replicas))
+                k8s_cmd = "curl -s -k {} " \
+                          "| sed 's/replicas: .*$/replicas: {}/' " \
+                          "| sed '0,/<your-private-registry-image-path>/s/<your-private-registry-image-path>/{}/' " \
+                          "| sed '0,/<your-private-registry-image-path>/s/<your-private-registry-image-path>/{}/' " \
+                          "| {} apply -f -".format(base_url + "pan-cn-mgmt.yaml",
+                                                   replicas,
+                                                   cn_images_dict['cn_init_image'].replace('/','\/'),
+                                                   cn_images_dict['cn_mgmt_image'].replace('/','\/'),
+                                                   ctl)
+                k8s_output = run_ssh_command(k8s_ssh_conn, k8s_cmd)
+                for l in k8s_output.rstrip().split('\n'):
+                    info(l)
+
+            else:
+                info("Creating CN-MGMT pods.")
+                info("Selected mode is {}. I will deploy {} replica(s)".format(k8s_dict['k8s_mode'], replicas))
+                k8s_cmd = "curl -s -k {} " \
+                          "| sed 's/replicas: .*$/replicas: {}/' " \
+                          "| sed '0,/<your-private-registry-image-path>/s/<your-private-registry-image-path>/{}/' " \
+                          "| sed '0,/<your-private-registry-image-path>/s/<your-private-registry-image-path>/{}/' " \
+                          "| sed 's/storageClassName/#storageClassName/g' " \
+                          "| {} apply -f -".format(base_url + "pan-cn-mgmt.yaml",
+                                                   replicas,
+                                                   cn_images_dict['cn_init_image'].replace('/', '\/'),
+                                                   cn_images_dict['cn_mgmt_image'].replace('/', '\/'),
+                                                   ctl)
+                k8s_output = run_ssh_command(k8s_ssh_conn, k8s_cmd)
+                for l in k8s_output.rstrip().split('\n'):
+                    info(l)
 
         else:
             info("Creating CN-MGMT pods.")
@@ -673,7 +692,6 @@ def create_cn_series(k8s_ssh_conn, base_url, cn_images_dict, panorama_dict, k8s_
                       "| sed 's/replicas: .*$/replicas: {}/' " \
                       "| sed '0,/<your-private-registry-image-path>/s/<your-private-registry-image-path>/{}/' " \
                       "| sed '0,/<your-private-registry-image-path>/s/<your-private-registry-image-path>/{}/' " \
-                      "| sed 's/storageClassName/#storageClassName/g' " \
                       "| {} apply -f -".format(base_url + "pan-cn-mgmt.yaml",
                                                replicas,
                                                cn_images_dict['cn_init_image'].replace('/', '\/'),

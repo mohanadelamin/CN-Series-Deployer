@@ -1,5 +1,5 @@
 ## CN-Series Deployer
-Python script to deploy Palo Alto Networks [CN-Series](https://docs.paloaltonetworks.com/pan-os/10-0/pan-os-new-features/virtualization-features/cn-series-firewalls-for-securing-kubernetes-deployments.html) in Kubernetes native ( **Openshift support to be added soon** ).
+Python script to deploy Palo Alto Networks [CN-Series](https://docs.paloaltonetworks.com/pan-os/10-0/pan-os-new-features/virtualization-features/cn-series-firewalls-for-securing-kubernetes-deployments.html) in Kubernetes **Native** or **OpenShift**.
 
 The script will do the following tasks:
 1. Check Panorama PAN-OS version and confirm its running version 10.0 or later.

@@ -475,7 +475,6 @@ def create_k8s_plugin_svc_account(k8s_ssh_conn, base_url, ctl):
                               "-o jsonpath='{range .secrets[*]}{.name}{\"\\n\"}' " \
                               "| grep -m1 -oP \".*token.*\" " \
                               "| tr -d \"\\012\\015\""
-        print(svc_token_cmd)
         svc_token = run_ssh_command(k8s_ssh_conn, svc_token_cmd)
         svc_account_json_cmd = "{} -n kube-system get secret {} -n kube-system -o json".format(ctl, svc_token.rstrip())
         svc_account_json = run_ssh_command(k8s_ssh_conn, svc_account_json_cmd)

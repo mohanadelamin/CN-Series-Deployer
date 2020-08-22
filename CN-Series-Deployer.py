@@ -825,8 +825,6 @@ def main():
             k8s_type = 'Native-Kubernetes'
         elif args.k8s_type == 'openshift':
             k8s_type = 'OpenShift'
-            print("Sorry I only support native for now. OpenShift support comming soon.")
-            sys.exit()
         else:
             error("Sorry I don't support this type yet. only native or openshift is supported.")
             sys.exit()

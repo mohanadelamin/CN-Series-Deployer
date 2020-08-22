@@ -15,6 +15,8 @@ __license__ = "MIT"
 import sys
 import argparse
 import re
+import gzip
+import io
 import time
 import base64
 import xml.etree.ElementTree as ET
@@ -107,7 +109,7 @@ def get_args():
                         action='store', help='CN-Series registration pin id')
     parser.add_argument('--cn_pin_value', required=False,
                         action='store', help='CN-Series registration pin value')
-    parser.add_argument('--pv_type', required=True,
+    parser.add_argument('--pv_type', required=False,
                         action='store', help='CN-MGMT Persistent Volumes type: Manual, Local, or Dynamic')
 
     args = parser.parse_args()
@@ -453,15 +455,14 @@ def run_kubelet_cmd(k8s_ssh_conn, cmd, ns):
         return None
 
 
-def kubelet_apply(k8s_ssh_conn, cmd):
-    try:
-        k8s_output = run_ssh_command(k8s_ssh_conn, cmd)
-        for l in k8s_output.rstrip().split('\n'):
-            info(l)
-        return k8s_output.rstrip()
-    except:
-        error("I couldn't create the service account")
-        return None
+def gzip_str(string_):
+    out = io.BytesIO()
+
+    with gzip.GzipFile(fileobj=out, mode='w') as fo:
+        fo.write(string_.encode())
+
+    bytes_obj = out.getvalue()
+    return bytes_obj
 
 
 def create_k8s_plugin_svc_account(k8s_ssh_conn, base_url, ctl):
@@ -470,11 +471,16 @@ def create_k8s_plugin_svc_account(k8s_ssh_conn, base_url, ctl):
         k8s_output = run_ssh_command(k8s_ssh_conn, k8s_cmd)
         for l in k8s_output.rstrip().split('\n'):
             info(l)
-        svc_token_cmd = ctl + " get serviceaccount pan-plugin-user -n kube-system -o jsonpath='{.secrets[0].name}'"
+        svc_token_cmd = ctl + " get serviceaccount pan-plugin-user -n kube-system " \
+                              "-o jsonpath='{range .secrets[*]}{.name}{\"\\n\"}' " \
+                              "| grep -m1 -oP \".*token.*\" " \
+                              "| tr -d \"\\012\\015\""
+        print(svc_token_cmd)
         svc_token = run_ssh_command(k8s_ssh_conn, svc_token_cmd)
         svc_account_json_cmd = "{} -n kube-system get secret {} -n kube-system -o json".format(ctl, svc_token.rstrip())
         svc_account_json = run_ssh_command(k8s_ssh_conn, svc_account_json_cmd)
-        svc_account_b64 = base64.b64encode(svc_account_json.rstrip().encode()).decode()
+        svc_account_gzip = gzip_str(svc_account_json.rstrip())
+        svc_account_b64 = base64.b64encode(svc_account_gzip).decode()
         info("Plugin Service account base64 token generated.")
         return svc_account_b64
     except:
@@ -811,6 +817,7 @@ def main():
             error("Sorry I don't support this mode. Only lite or full are supported.")
             sys.exit()
         k8s_name = args.k8s_name
+
         pv_type = args.pv_type
 
         cn_pin_id = args.cn_pin_id
@@ -831,6 +838,9 @@ def main():
 
         if k8s_type == 'Native-Kubernetes':
             yaml_base_url = BASE_URL + "native/"
+            if not pv_type:
+                error("PV Type is required for Native deployment.")
+                sys.exit()
         elif k8s_type == 'OpenShift':
             yaml_base_url = BASE_URL + "openshift/"
 

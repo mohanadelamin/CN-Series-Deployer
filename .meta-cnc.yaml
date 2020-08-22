@@ -38,7 +38,7 @@ variables:
     default: ChangeMePlease
     type_hint: password
   - name: k8s_ip
-    description: "Kubernetes cluster master IP"
+    description: "Kubernetes cluster API IP"
     default: 192.168.55.144
     type_hint: text
   - name: k8s_type
